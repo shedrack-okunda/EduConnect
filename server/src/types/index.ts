@@ -1,3 +1,15 @@
+// Base User Interface
+export interface IUser {
+	_id: string;
+	email: string;
+	password: string;
+	role: UserRole;
+	status: UserStatus;
+	profile: IUserProfile;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
 // User Role Enum
 export enum UserRole {
 	STUDENT = "student",
@@ -11,18 +23,6 @@ export enum UserStatus {
 	INACTIVE = "inactive",
 	PENDING = "pending",
 	SUSPENDED = "suspended",
-}
-
-// Base User Interface
-export interface IUser {
-	_id: string;
-	email: string;
-	password: string;
-	role: UserRole;
-	status: UserStatus;
-	profile: IUserProfile;
-	createdAt: Date;
-	updatedAt: Date;
 }
 
 // User Profile Interface

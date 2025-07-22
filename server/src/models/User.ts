@@ -7,7 +7,6 @@ export interface IUserDocument extends IUser, Document {
 	comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-// User Schema
 const UserSchema = new Schema<IUserDocument>(
 	{
 		email: {
@@ -93,7 +92,7 @@ const UserSchema = new Schema<IUserDocument>(
 	{
 		timestamps: true,
 		toJSON: {
-			transform: (doc, ret) => {
+			transform: (_doc, ret: any) => {
 				delete ret.password;
 				return ret;
 			},
@@ -102,7 +101,6 @@ const UserSchema = new Schema<IUserDocument>(
 );
 
 // Indexes for better performance
-UserSchema.index({ email: 1 });
 UserSchema.index({ role: 1 });
 UserSchema.index({ status: 1 });
 UserSchema.index({ "profile.skills": 1 });

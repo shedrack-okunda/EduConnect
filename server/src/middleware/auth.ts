@@ -1,6 +1,6 @@
 import { IUserDocument } from "../models/User";
-import { AuthService } from "../services/auth";
 import { Request, Response, NextFunction } from "express";
+import { verifyToken } from "../services/auth";
 
 // Extend Express Request interface
 declare global {
@@ -11,41 +11,33 @@ declare global {
 	}
 }
 
-export class AuthMiddleware {
-	private authService: AuthService;
-
-	constructor() {
-		this.authService = new AuthService();
+// Extract token from Authorization header
+const extractTokenFromHeader = (req: Request): string | null => {
+	const authHeader = req.headers.authorization;
+	if (!authHeader || !authHeader.startsWith("Bearer ")) {
+		return null;
 	}
+	return authHeader.substring(7);
+};
 
-	// Authenticate user
-	authenticate = async (
-		req: Request,
-		res: Response,
-		next: NextFunction
-	): Promise<void> => {
-		try {
-			const token = this.extractTokenFromHeader(req);
+// Authenticate middleware
+export const authenticate = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+): Promise<void> => {
+	try {
+		const token = extractTokenFromHeader(req);
 
-			if (!token) {
-				res.status(401).json({ error: "Access token required" });
-				return;
-			}
-
-			const user = await this.authService.verifyToken(token);
-			req.user = user;
-			next();
-		} catch (error) {
-			res.status(401).json({ error: "Invalid or expired token" });
+		if (!token) {
+			res.status(401).json({ error: "Access token required" });
+			return;
 		}
-	};
 
-	// Extract token from Authorization header
-	private extractTokenFromHeader(req: Request): string | null {
-		const authHeader = req.headers.authorization;
-		if (!authHeader || !authHeader.startsWith("Bearer ")) {
-			return null;
-		}
-		return authHeader.substring(7);
+		const user = await verifyToken(token);
+		req.user = user;
+		next();
+	} catch (error) {
+		res.status(401).json({ error: "Invalid or expired token" });
 	}
-}
+};
