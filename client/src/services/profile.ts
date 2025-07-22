@@ -1,5 +1,6 @@
 import type { IEducation, IExperience } from "../../../server/src/types";
 import type { IUser, IUserProfile } from "../types";
+import { apiClient } from "../utils/api";
 
 class ProfileService {
 	// Get user profile
@@ -8,6 +9,7 @@ class ProfileService {
 			const response = await apiClient.get("/profile");
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to get profile");
 		}
 	}
@@ -18,6 +20,7 @@ class ProfileService {
 			const response = await apiClient.put("/profile", profileData);
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to update profile");
 		}
 	}
@@ -28,6 +31,7 @@ class ProfileService {
 			const response = await apiClient.put("/profile/skills", { skills });
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to update skills");
 		}
 	}
@@ -40,6 +44,7 @@ class ProfileService {
 			});
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to update interests");
 		}
 	}
@@ -53,6 +58,7 @@ class ProfileService {
 			);
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to add education");
 		}
 	}
@@ -66,6 +72,7 @@ class ProfileService {
 			);
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to add experience");
 		}
 	}
@@ -78,6 +85,7 @@ class ProfileService {
 			);
 			return response.data.data;
 		} catch (error) {
+			console.error(error);
 			throw new Error("Failed to search users");
 		}
 	}

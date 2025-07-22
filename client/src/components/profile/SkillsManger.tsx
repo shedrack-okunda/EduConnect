@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
+import { profileService } from "../../services/profile";
+
 interface SkillsManagerProps {
 	skills: string[];
 	onSkillsUpdate: (skills: string[]) => void;

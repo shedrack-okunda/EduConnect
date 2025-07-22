@@ -1,3 +1,9 @@
+import { useForm } from "react-hook-form";
+import { UserRole } from "../../types";
+import { useAuth } from "../../context/AuthContext";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+
 interface RegisterFormData {
 	email: string;
 	password: string;
@@ -34,7 +40,8 @@ export const RegisterForm: React.FC = () => {
 			});
 			navigate("/dashboard");
 		} catch (error) {
-			setError(error.message);
+			console.error(error);
+			setError("Failed to create account. Please try again.");
 		}
 	};
 

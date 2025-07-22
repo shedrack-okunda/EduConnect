@@ -1,4 +1,10 @@
-import type { IEducation, IExperience, ISocialLinks, IUserPreferences } from '../../../server/src/types/index';
+import type {
+	IEducation,
+	IExperience,
+	ISocialLinks,
+	IUserPreferences,
+} from "../../../shared/types/index";
+
 // Mirror backend types for frontend use
 export enum UserRole {
 	STUDENT = "student",
@@ -19,8 +25,6 @@ export interface IUser {
 	role: UserRole;
 	status: UserStatus;
 	profile: IUserProfile;
-	createdAt: string;
-	updatedAt: string;
 }
 
 export interface IUserProfile {

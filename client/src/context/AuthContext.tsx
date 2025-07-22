@@ -6,7 +6,8 @@ import React, {
 	type ReactNode,
 } from "react";
 import type { IUser } from "../types";
-import type { IAuthResponse } from "../../../server/src/types";
+import { authService } from "../services/auth";
+import type { IAuthResponse, IRegisterDTO } from "../../../shared/types";
 
 // Auth State Interface
 interface AuthState {
@@ -29,7 +30,7 @@ type AuthAction =
 interface AuthContextType {
 	state: AuthState;
 	login: (email: string, password: string) => Promise<void>;
-	register: (userData: any) => Promise<void>;
+	register: (userData: IRegisterDTO) => Promise<void>;
 	logout: () => void;
 	updateUser: (userData: Partial<IUser>) => void;
 }
@@ -101,6 +102,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 					dispatch({ type: "SET_USER", payload: user });
 					dispatch({ type: "SET_TOKEN", payload: token });
 				} catch (error) {
+					console.error(error);
 					localStorage.removeItem("token");
 					localStorage.removeItem("refreshToken");
 				} finally {
@@ -125,7 +127,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	};
 
 	// Register function
-	const register = async (userData: any): Promise<void> => {
+	const register = async (userData: IRegisterDTO): Promise<void> => {
 		try {
 			dispatch({ type: "SET_LOADING", payload: true });
 			const response = await authService.register(userData);

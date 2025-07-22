@@ -1,3 +1,8 @@
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 interface LoginFormData {
 	email: string;
 	password: string;
@@ -19,7 +24,8 @@ export const LoginForm: React.FC = () => {
 			await login(data.email, data.password);
 			navigate("/dashboard");
 		} catch (error) {
-			setError(error.message);
+			console.error(error);
+			setError("Login failed. Please try again.");
 		}
 	};
 

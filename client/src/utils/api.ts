@@ -1,8 +1,13 @@
-import axios, { type AxiosInstance, type AxiosRequestConfig } from "axios";
+import type {
+	AxiosInstance,
+	AxiosRequestHeaders,
+	InternalAxiosRequestConfig,
+} from "axios";
+import axios from "axios";
 
 // Create axios instance
 const apiClient: AxiosInstance = axios.create({
-	baseURL: import.meta.VITE_API || "http://localhost:5000/api",
+	baseURL: import.meta.env.VITE_API_URL,
 	timeout: 10000,
 	headers: {
 		"Content-Type": "application/json",
@@ -11,13 +16,14 @@ const apiClient: AxiosInstance = axios.create({
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
-	(config: AxiosRequestConfig) => {
+	(config: InternalAxiosRequestConfig) => {
 		const token = localStorage.getItem("token");
 		if (token) {
 			config.headers = {
 				...config.headers,
 				Authorization: `Bearer ${token}`,
-			};
+				"Content-Type": "application/json",
+			} as AxiosRequestHeaders;
 		}
 		return config;
 	},
@@ -52,6 +58,7 @@ apiClient.interceptors.response.use(
 				localStorage.removeItem("token");
 				localStorage.removeItem("refreshToken");
 				window.location.href = "/login";
+				console.error(refreshError);
 			}
 		}
 
