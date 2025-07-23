@@ -4,6 +4,7 @@ import { IUserDocument, User } from "../models/User";
 
 // Environment variables
 const JWT_SECRET = process.env.JWT_SECRET as string;
+console.log(JWT_SECRET);
 const JWT_EXPIRES_IN = process.env
 	.JWT_EXPIRES_IN as jwt.SignOptions["expiresIn"];
 const REFRESH_TOKEN_SECRET = process.env.REFRESH_TOKEN_SECRET as string;
@@ -14,7 +15,7 @@ const REFRESH_TOKEN_EXPIRES_IN = process.env
 const generateToken = (userId: string): string => {
 	return jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 };
-
+// console.log(generateToken('testUserId'))
 // Generate Refresh Token
 const generateRefreshToken = (userId: string): string => {
 	return jwt.sign({ userId }, REFRESH_TOKEN_SECRET, {
