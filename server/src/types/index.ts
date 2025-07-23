@@ -1,3 +1,5 @@
+import { IUserDocument } from "../models/User";
+
 // Base User Interface
 export interface IUser {
 	_id: string;
@@ -101,4 +103,12 @@ export interface IAuthResponse {
 	user: IUser;
 	token: string;
 	refreshToken: string;
+}
+
+declare global {
+	namespace Express {
+		interface Request {
+			user?: IUserDocument;
+		}
+	}
 }

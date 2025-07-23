@@ -1,15 +1,5 @@
-import { IUserDocument } from "../models/User";
 import { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../services/auth";
-
-// Extend Express Request interface
-declare global {
-	namespace Express {
-		interface Request {
-			user?: IUserDocument;
-		}
-	}
-}
 
 // Extract token from Authorization header
 const extractTokenFromHeader = (req: Request): string | null => {
