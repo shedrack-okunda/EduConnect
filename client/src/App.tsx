@@ -1,23 +1,33 @@
-import { useState } from "react";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import { RegisterForm } from "./components/auth/RegisterForm";
+import { LoginForm } from "./components/auth/LoginForm";
+import Dashboard from "./layout/Dashboard";
+import { ProtectedRoute } from "./components/common/ProtectedRoute";
+import UnauthorizedPage from "./pages/UnauthorizedPage";
+import { UserRole } from "./types";
 
 function App() {
-	const [count, setCount] = useState(0);
-
 	return (
-		<>
-			<h1>Vite + React</h1>
-			<div className="card">
-				<button onClick={() => setCount((count) => count + 1)}>
-					count is {count}
-				</button>
-				<p>
-					Edit <code>src/App.tsx</code> and save to test HMR
-				</p>
-			</div>
-			<p className="read-the-docs">
-				Click on the Vite and React logos to learn more
-			</p>
-		</>
+		<Router>
+			<Routes>
+				<Route path="/register" element={<RegisterForm />} />
+				<Route path="/login" element={<LoginForm />} />
+				<Route
+					path="/dashboard"
+					element={
+						<ProtectedRoute
+							requiredRoles={[
+								UserRole.STUDENT,
+								UserRole.EDUCATOR,
+								UserRole.ADMIN,
+							]}>
+							<Dashboard />
+						</ProtectedRoute>
+					}
+				/>{" "}
+				<Route path="/unauthorized" element={<UnauthorizedPage />} />
+			</Routes>
+		</Router>
 	);
 }
 
