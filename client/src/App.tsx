@@ -5,11 +5,13 @@ import Dashboard from "./layout/Dashboard";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import { UserRole } from "./types";
+import HomePage from "./pages/HomePage";
 
 function App() {
 	return (
 		<Router>
 			<Routes>
+				<Route path="/" element={<HomePage />} />
 				<Route path="/register" element={<RegisterForm />} />
 				<Route path="/login" element={<LoginForm />} />
 				<Route

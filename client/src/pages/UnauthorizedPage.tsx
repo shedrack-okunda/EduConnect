@@ -14,9 +14,9 @@ const UnauthorizedPage: React.FC = () => {
 					You do not have access to this page.
 				</p>
 				<button
-					onClick={() => navigate("/dashboard")}
+					onClick={() => navigate("/")}
 					className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-					Go to Dashboard
+					Go to Home
 				</button>
 			</div>
 		</div>
