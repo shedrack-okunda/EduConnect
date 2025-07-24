@@ -7,6 +7,7 @@ import {
 	updateUserSkills,
 	updateUserInterests,
 	searchUsersByQuery,
+	updateUserEducation,
 } from "../controllers/profileController";
 import { authenticate } from "../middleware/auth"; // your middleware that sets req.user
 
@@ -23,6 +24,9 @@ router.put("/", updateUserProfile);
 
 // POST /api/profile/education
 router.post("/education", addUserEducation);
+
+// PUT /api/profile/education
+router.put("/education", authenticate, updateUserEducation);
 
 // POST /api/profile/experience
 router.post("/experience", addUserExperience);

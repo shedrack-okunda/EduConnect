@@ -1,19 +1,23 @@
 import { useEffect, useState } from "react";
 import { profileService } from "../services/profile";
 import { useAuth } from "../context/AuthContext";
-import { SkillsManager } from "../components/profile/SkillsManger";
+import { SkillsDisplay } from "../components/profile/SkillsDisplay";
+import { EducationDisplay } from "../components/profile/EducationDisplay";
+import type { IEducation } from "../../../shared/types";
 
 const Dashboard = () => {
 	const { state } = useAuth();
 	const { user } = state;
 	const [skills, setSkills] = useState<string[]>([]);
+	const [education, setEducation] = useState<IEducation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		const fetchProfile = async () => {
 			try {
-				const profile = await profileService.getProfile(); // This should call the backend
+				const profile = await profileService.getProfile();
 				setSkills(profile?.profile?.skills || []);
+				setEducation(profile?.profile?.education || []);
 			} catch (error) {
 				console.error("Failed to fetch profile:", error);
 			} finally {
@@ -37,15 +41,14 @@ const Dashboard = () => {
 			{/* Skills */}
 			<div className="bg-white p-4 rounded-lg shadow">
 				<h2 className="text-xl font-semibold mb-4">Skills</h2>
-				<SkillsManager skills={skills} onSkillsUpdate={setSkills} />
+				<SkillsDisplay skills={skills} />
 			</div>
 
-			{/* Future Sections */}
-			{/* 
-				<EducationManager />
-				<ExperienceManager />
-				<SocialLinks />
-			*/}
+			{/* Education */}
+			<div className="bg-white p-4 rounded-lg shadow">
+				<h2 className="text-xl font-semibold mb-4">Education</h2>
+				<EducationDisplay education={education} />
+			</div>
 		</div>
 	);
 };

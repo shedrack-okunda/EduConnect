@@ -7,6 +7,7 @@ import {
 	updateSkills,
 	updateInterests,
 	searchUsers,
+	updateEducation,
 } from "../services/profile";
 import { IEducation, IExperience, IUserProfile } from "../types";
 
@@ -18,8 +19,8 @@ export const getUserProfile = async (req: Request, res: Response) => {
 				success: false,
 				message: "Unauthorized - user not found",
 			});
-        }
-        
+		}
+
 		const userId = req.user._id;
 		const user = await getProfile(userId);
 		res.status(200).json({
@@ -38,7 +39,7 @@ export const getUserProfile = async (req: Request, res: Response) => {
 // Update user profile
 export const updateUserProfile = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",
@@ -65,7 +66,7 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 // Add education
 export const addUserEducation = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",
@@ -89,10 +90,37 @@ export const addUserEducation = async (req: Request, res: Response) => {
 	}
 };
 
+// Update education
+export const updateUserEducation = async (req: Request, res: Response) => {
+	try {
+		if (!req.user) {
+			return res.status(401).json({
+				success: false,
+				message: "Unauthorized - user not found",
+			});
+		}
+
+		const userId = req.user._id;
+		const { education } = req.body;
+
+		const user = await updateEducation(userId, education);
+		res.status(200).json({
+			success: true,
+			message: "Education updated successfully",
+			data: user,
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
 // Add experience
 export const addUserExperience = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",
@@ -119,7 +147,7 @@ export const addUserExperience = async (req: Request, res: Response) => {
 // Update skills
 export const updateUserSkills = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",
@@ -146,7 +174,7 @@ export const updateUserSkills = async (req: Request, res: Response) => {
 // Update interests
 export const updateUserInterests = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",
@@ -173,7 +201,7 @@ export const updateUserInterests = async (req: Request, res: Response) => {
 // Search users
 export const searchUsersByQuery = async (req: Request, res: Response) => {
 	try {
-        if (!req.user) {
+		if (!req.user) {
 			return res.status(401).json({
 				success: false,
 				message: "Unauthorized - user not found",

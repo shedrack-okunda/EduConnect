@@ -43,8 +43,8 @@ export interface IEducation {
 	institution: string;
 	degree: string;
 	fieldOfStudy: string;
-	startDate: Date;
-	endDate?: Date;
+	startDate: string;
+	endDate?: string;
 	current: boolean;
 }
 
@@ -53,8 +53,8 @@ export interface IExperience {
 	company: string;
 	position: string;
 	description?: string;
-	startDate: Date;
-	endDate?: Date;
+	startDate: string;
+	endDate?: string;
 	current: boolean;
 }
 

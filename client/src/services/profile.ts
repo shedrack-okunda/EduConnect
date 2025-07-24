@@ -6,7 +6,7 @@ class ProfileService {
 	// Get user profile
 	async getProfile(): Promise<IUser> {
 		try {
-			const response = await apiClient.get("/profile");
+			const response = await apiClient.get("/profile/me");
 			return response.data.data;
 		} catch (error) {
 			console.error(error);
@@ -60,6 +60,19 @@ class ProfileService {
 		} catch (error) {
 			console.error(error);
 			throw new Error("Failed to add education");
+		}
+	}
+
+	// Replace entire education array
+	async updateEducation(education: IEducation[]): Promise<IUser> {
+		try {
+			const response = await apiClient.put("/profile/education", {
+				education,
+			});
+			return response.data.data;
+		} catch (error) {
+			console.error(error);
+			throw new Error("Failed to update education");
 		}
 	}
 

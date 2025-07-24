@@ -68,6 +68,23 @@ export const addEducation = async (
 	}
 };
 
+// Update education
+export const updateEducation = async (
+	userId: string,
+	education: IEducation[]
+): Promise<IUserDocument> => {
+	try {
+		const user = await User.findById(userId);
+		if (!user) throw new Error("User not found");
+
+		user.profile.education = education;
+		await user.save();
+		return user;
+	} catch (error: any) {
+		throw new Error(`Failed to update education: ${error.message}`);
+	}
+};
+
 // Add experience
 export const addExperience = async (
 	userId: string,

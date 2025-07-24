@@ -9,6 +9,7 @@ import React, {
 import type { IUser } from "../types";
 import { authService } from "../services/auth";
 import type { IAuthResponse, IRegisterDTO } from "../../../shared/types";
+import { profileService } from "../services/profile";
 
 // Auth State Interface
 interface AuthState {
@@ -34,6 +35,7 @@ interface AuthContextType {
 	register: (userData: IRegisterDTO) => Promise<void>;
 	logout: () => void;
 	updateUser: (userData: Partial<IUser>) => void;
+	refreshUser: () => Promise<void>;
 }
 
 // Initial State
@@ -142,11 +144,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	// Logout function
 	const logout = (): void => {
 		dispatch({ type: "LOGOUT" });
+		localStorage.removeItem("token");
 	};
 
 	// Update user function
 	const updateUser = (userData: Partial<IUser>): void => {
 		dispatch({ type: "UPDATE_USER", payload: userData });
+	};
+
+	const refreshUser = async () => {
+		const updated = await profileService.getProfile();
+		dispatch({ type: "SET_USER", payload: updated });
 	};
 
 	const contextValue: AuthContextType = {
@@ -155,6 +163,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 		register,
 		logout,
 		updateUser,
+		refreshUser,
 	};
 
 	return (
