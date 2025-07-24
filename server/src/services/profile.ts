@@ -50,24 +50,6 @@ export const updateProfile = async (
 	}
 };
 
-// Add education
-export const addEducation = async (
-	userId: string,
-	education: IEducation
-): Promise<IUserDocument> => {
-	try {
-		const user = await User.findById(userId);
-		if (!user) throw new Error("User not found");
-
-		user.profile.education = user.profile.education || [];
-		user.profile.education.push(education);
-		await user.save();
-		return user;
-	} catch (error: any) {
-		throw new Error(`Failed to add education: ${error.message}`);
-	}
-};
-
 // Update education
 export const updateEducation = async (
 	userId: string,
@@ -85,21 +67,20 @@ export const updateEducation = async (
 	}
 };
 
-// Add experience
-export const addExperience = async (
+// update Experience
+export const updateExperience = async (
 	userId: string,
-	experience: IExperience
+	experience: IExperience[]
 ): Promise<IUserDocument> => {
 	try {
 		const user = await User.findById(userId);
 		if (!user) throw new Error("User not found");
 
-		user.profile.experience = user.profile.experience || [];
-		user.profile.experience.push(experience);
+		user.profile.experience = experience;
 		await user.save();
 		return user;
 	} catch (error: any) {
-		throw new Error(`Failed to add experience: ${error.message}`);
+		throw new Error(`Failed to update experience: ${error.message}`);
 	}
 };
 

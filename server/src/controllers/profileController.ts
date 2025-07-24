@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import {
 	getProfile,
 	updateProfile,
-	addEducation,
-	addExperience,
 	updateSkills,
 	updateInterests,
 	searchUsers,
 	updateEducation,
+	updateExperience,
 } from "../services/profile";
-import { IEducation, IExperience, IUserProfile } from "../types";
+import { IUserProfile } from "../types";
 
 // Get current user's profile
 export const getUserProfile = async (req: Request, res: Response) => {
@@ -63,33 +62,6 @@ export const updateUserProfile = async (req: Request, res: Response) => {
 	}
 };
 
-// Add education
-export const addUserEducation = async (req: Request, res: Response) => {
-	try {
-		if (!req.user) {
-			return res.status(401).json({
-				success: false,
-				message: "Unauthorized - user not found",
-			});
-		}
-
-		const userId = req.user._id;
-		const education: IEducation = req.body;
-
-		const user = await addEducation(userId, education);
-		res.status(200).json({
-			success: true,
-			message: "Education added successfully",
-			data: user,
-		});
-	} catch (error: any) {
-		res.status(400).json({
-			success: false,
-			message: error.message,
-		});
-	}
-};
-
 // Update education
 export const updateUserEducation = async (req: Request, res: Response) => {
 	try {
@@ -117,8 +89,8 @@ export const updateUserEducation = async (req: Request, res: Response) => {
 	}
 };
 
-// Add experience
-export const addUserExperience = async (req: Request, res: Response) => {
+// update experience
+export const updateUserExperience = async (req: Request, res: Response) => {
 	try {
 		if (!req.user) {
 			return res.status(401).json({
@@ -128,9 +100,9 @@ export const addUserExperience = async (req: Request, res: Response) => {
 		}
 
 		const userId = req.user._id;
-		const experience: IExperience = req.body;
+		const { experience } = req.body;
 
-		const user = await addExperience(userId, experience);
+		const user = await updateExperience(userId, experience);
 		res.status(200).json({
 			success: true,
 			message: "Experience added successfully",

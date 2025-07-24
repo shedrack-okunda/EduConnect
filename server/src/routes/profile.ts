@@ -2,12 +2,11 @@ import express from "express";
 import {
 	getUserProfile,
 	updateUserProfile,
-	addUserEducation,
-	addUserExperience,
 	updateUserSkills,
 	updateUserInterests,
 	searchUsersByQuery,
 	updateUserEducation,
+	updateUserExperience,
 } from "../controllers/profileController";
 import { authenticate } from "../middleware/auth"; // your middleware that sets req.user
 
@@ -22,14 +21,11 @@ router.get("/me", getUserProfile);
 // PUT /api/profile
 router.put("/", updateUserProfile);
 
-// POST /api/profile/education
-router.post("/education", addUserEducation);
-
 // PUT /api/profile/education
 router.put("/education", authenticate, updateUserEducation);
 
-// POST /api/profile/experience
-router.post("/experience", addUserExperience);
+// PUT /api/profile/experience
+router.put("/experience", authenticate, updateUserExperience);
 
 // PUT /api/profile/skills
 router.put("/skills", updateUserSkills);
