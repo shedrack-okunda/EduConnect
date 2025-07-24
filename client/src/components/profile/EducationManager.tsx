@@ -22,22 +22,35 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 		current: false,
 	});
 	const [isLoading, setIsLoading] = useState(false);
+	const [editIndex, setEditIndex] = useState<number | null>(null);
+
 	const { updateUser, refreshUser } = useAuth();
 	const navigate = useNavigate();
 
-	const handleAddEducation = async () => {
+	const handleSave = async () => {
 		if (!formData.institution.trim()) return;
 
 		try {
 			setIsLoading(true);
-			const updatedEducation = [...education, formData];
+			let updatedEducation;
+
+			if (editIndex !== null) {
+				// Edit mode: update existing item
+				updatedEducation = [...education];
+				updatedEducation[editIndex] = formData;
+			} else {
+				// Add mode
+				updatedEducation = [...education, formData];
+			}
+
 			const updatedUser = await profileService.updateEducation(
 				updatedEducation
-			); // send full array
+			);
 			onEducationUpdate(updatedEducation);
 			await refreshUser();
 			updateUser(updatedUser);
-			navigate("/profile");
+
+			// Reset form
 			setFormData({
 				institution: "",
 				degree: "",
@@ -46,11 +59,20 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 				endDate: "",
 				current: false,
 			});
+			setEditIndex(null);
+			navigate("/profile");
 		} catch (error) {
-			console.error("Failed to add education:", error);
+			console.error("Failed to save education:", error);
 		} finally {
 			setIsLoading(false);
 		}
+	};
+
+	const handleEdit = (index: number) => {
+		const item = education[index];
+		setFormData(item);
+		setEditIndex(index);
+		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
 
 	const handleRemoveEducation = async (indexToRemove: number) => {
@@ -61,10 +83,21 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 			);
 			const updatedUser = await profileService.updateEducation(
 				updatedEducation
-			); // ✅ send updated array
+			);
 			onEducationUpdate(updatedEducation);
 			await refreshUser();
 			updateUser(updatedUser);
+			if (editIndex === indexToRemove) {
+				setFormData({
+					institution: "",
+					degree: "",
+					fieldOfStudy: "",
+					startDate: "",
+					endDate: "",
+					current: false,
+				});
+				setEditIndex(null);
+			}
 		} catch (error) {
 			console.error("Failed to remove education:", error);
 		} finally {
@@ -73,11 +106,12 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 	};
 
 	return (
-		<div className="mt-20  space-y-4 bg-purple-50 p-4 rounded-lg">
+		<div className="mt-20 space-y-4 bg-purple-50 p-4 rounded-lg">
 			<label className="block text-lg font-bold text-gray-700">
-				Education
+				{editIndex !== null ? "Edit Education" : "Add Education"}
 			</label>
 
+			{/* Inputs */}
 			<div className="flex flex-col md:flex-row gap-2">
 				<input
 					type="text"
@@ -149,12 +183,13 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 			</label>
 
 			<button
-				onClick={handleAddEducation}
+				onClick={handleSave}
 				disabled={isLoading}
 				className="flex px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
-				Add Education
+				{editIndex !== null ? "Update Education" : "Add Education"}
 			</button>
 
+			{/* List */}
 			<div className="space-y-2">
 				{education.map((edu, index) => (
 					<div
@@ -173,12 +208,20 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 									: "N/A"}
 							</small>
 						</div>
-						<button
-							onClick={() => handleRemoveEducation(index)}
-							disabled={isLoading}
-							className="text-red-600 hover:text-red-800 text-xl font-bold">
-							×
-						</button>
+
+						<div className="flex gap-2 items-center">
+							<button
+								onClick={() => handleEdit(index)}
+								className="text-blue-600 hover:text-blue-800 text-sm font-medium underline">
+								Edit
+							</button>
+							<button
+								onClick={() => handleRemoveEducation(index)}
+								disabled={isLoading}
+								className="text-red-600 hover:text-red-800 text-xl font-bold">
+								×
+							</button>
+						</div>
 					</div>
 				))}
 			</div>

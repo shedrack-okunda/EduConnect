@@ -4,11 +4,13 @@ import { useAuth } from "../context/AuthContext";
 import { SkillsDisplay } from "../components/profile/SkillsDisplay";
 import { EducationDisplay } from "../components/profile/EducationDisplay";
 import type { IEducation } from "../../../shared/types";
+import { InterestsDisplay } from "../components/profile/InterestDisplay";
 
 const Dashboard = () => {
 	const { state } = useAuth();
 	const { user } = state;
 	const [skills, setSkills] = useState<string[]>([]);
+	const [interests, setInterests] = useState<string[]>([]);
 	const [education, setEducation] = useState<IEducation[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 
@@ -17,6 +19,7 @@ const Dashboard = () => {
 			try {
 				const profile = await profileService.getProfile();
 				setSkills(profile?.profile?.skills || []);
+				setInterests(profile?.profile?.interests || []);
 				setEducation(profile?.profile?.education || []);
 			} catch (error) {
 				console.error("Failed to fetch profile:", error);
@@ -42,6 +45,12 @@ const Dashboard = () => {
 			<div className="bg-white p-4 rounded-lg shadow">
 				<h2 className="text-xl font-semibold mb-4">Skills</h2>
 				<SkillsDisplay skills={skills} />
+			</div>
+
+			{/* Interest */}
+			<div className="bg-white p-4 rounded-lg shadow">
+				<h2 className="text-xl font-semibold mb-4">Interests</h2>
+				<InterestsDisplay interests={interests} />
 			</div>
 
 			{/* Education */}

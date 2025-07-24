@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { profileService } from "../../services/profile";
+import { useNavigate } from "react-router-dom";
 
 interface SkillsManagerProps {
 	skills: string[];
@@ -14,6 +15,7 @@ export const SkillsManager: React.FC<SkillsManagerProps> = ({
 	const [newSkill, setNewSkill] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
 	const { updateUser } = useAuth();
+	const navigate = useNavigate();
 
 	const handleAddSkill = async () => {
 		if (!newSkill.trim()) return;
@@ -27,6 +29,7 @@ export const SkillsManager: React.FC<SkillsManagerProps> = ({
 			onSkillsUpdate(updatedSkills);
 			updateUser(updatedUser);
 			setNewSkill("");
+			navigate("/profile");
 		} catch (error) {
 			console.error("Failed to add skill:", error);
 		} finally {
@@ -53,9 +56,9 @@ export const SkillsManager: React.FC<SkillsManagerProps> = ({
 	};
 
 	return (
-		<div className="space-y-4">
+		<div className="mt-20 p-2 space-y-4">
 			<div>
-				<label className="block text-sm font-medium text-gray-700">
+				<label className="block text-lg font-bold text-gray-700">
 					Skills
 				</label>
 				<div className="mt-2 flex flex-wrap gap-2">

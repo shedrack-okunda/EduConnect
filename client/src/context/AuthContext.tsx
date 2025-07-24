@@ -35,7 +35,7 @@ interface AuthContextType {
 	register: (userData: IRegisterDTO) => Promise<void>;
 	logout: () => void;
 	updateUser: (userData: Partial<IUser>) => void;
-	refreshUser: () => Promise<void>;
+	refreshUser: () => Promise<IUser>;
 }
 
 // Initial State
@@ -155,6 +155,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	const refreshUser = async () => {
 		const updated = await profileService.getProfile();
 		dispatch({ type: "SET_USER", payload: updated });
+		return updated;
 	};
 
 	const contextValue: AuthContextType = {

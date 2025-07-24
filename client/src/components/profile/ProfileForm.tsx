@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import type { IUserProfile } from "../../types";
+import { useAuth } from "../../context/AuthContext";
 
 interface ProfileFormProps {
 	profile?: IUserProfile;
@@ -15,6 +16,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 		skills: profile?.skills || [],
 		interests: profile?.interests || [],
 	});
+	const { updateUser, refreshUser } = useAuth();
 
 	const handleChange = (
 		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -35,13 +37,18 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 		}
 	};
 
-	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		onSave({
+		const updatedProfile = {
 			...formData,
 			skills: formData.skills,
 			interests: formData.interests,
-		});
+		};
+
+		onSave(updatedProfile);
+
+		const refreshedUser = await refreshUser();
+		updateUser(refreshedUser);
 	};
 
 	return (
@@ -97,7 +104,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 				/>
 			</div>
 
-			<div>
+			{/* <div>
 				<label className="block text-sm font-medium">
 					Skills (comma-separated)
 				</label>
@@ -112,9 +119,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 					onChange={handleChange}
 					className="w-full border p-2 rounded"
 				/>
-			</div>
+			</div> */}
 
-			<div>
+			{/* <div>
 				<label className="block text-sm font-medium">
 					Interests (comma-separated)
 				</label>
@@ -129,7 +136,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 					onChange={handleChange}
 					className="w-full border p-2 rounded"
 				/>
-			</div>
+			</div> */}
 
 			<button
 				type="submit"

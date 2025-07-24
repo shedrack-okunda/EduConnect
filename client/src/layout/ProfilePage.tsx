@@ -1,17 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { EducationDisplay } from "../components/profile/EducationDisplay";
+import { profileService } from "../services/profile";
 
 const ProfilePage: React.FC = () => {
 	const navigate = useNavigate();
-	const { state } = useAuth();
+	const { state, refreshUser, updateUser } = useAuth();
 	const { user } = state;
+
+	useEffect(() => {
+		refreshUser();
+	}, []);
 
 	if (!user) return <p className="p-4">Loading profile...</p>;
 
 	const { firstName, lastName, avatar, bio, skills, interests } =
 		user.profile;
+
+	const handleRemoveSkill = async (skillToRemove: string) => {
+		const updatedSkills = user.profile.skills.filter(
+			(skill) => skill !== skillToRemove
+		);
+		const updatedUser = await profileService.updateSkills(updatedSkills);
+		updateUser(updatedUser);
+	};
+
+	const handleRemoveInterest = async (interestToRemove: string) => {
+		const updatedInterests = user.profile.interests.filter(
+			(i) => i !== interestToRemove
+		);
+		const updatedUser = await profileService.updateInterests(
+			updatedInterests
+		);
+		updateUser(updatedUser);
+	};
 
 	return (
 		<div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow space-y-8">
@@ -62,15 +85,27 @@ const ProfilePage: React.FC = () => {
 			{/* Skills */}
 			{skills?.length > 0 && (
 				<div className="bg-blue-50 p-4 rounded-md shadow-sm">
-					<h4 className="text-lg font-semibold text-blue-900 mb-3">
-						Skills
-					</h4>
+					<div className="flex justify-between items-center mb-3">
+						<h4 className="text-lg font-semibold text-blue-900">
+							Skills
+						</h4>
+						<button
+							onClick={() => navigate("/skills/edit")}
+							className="border px-3 py-1.5 rounded-md text-sm text-blue-600 hover:bg-blue-100 transition">
+							Edit Skills
+						</button>
+					</div>
 					<div className="flex flex-wrap gap-2">
 						{skills.map((skill, index) => (
 							<span
 								key={index}
-								className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm hover:bg-blue-200 transition">
+								className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
 								{skill}
+								<button
+									onClick={() => handleRemoveSkill(skill)}
+									className="ml-2 text-blue-600 hover:text-blue-800">
+									×
+								</button>
 							</span>
 						))}
 					</div>
@@ -80,15 +115,29 @@ const ProfilePage: React.FC = () => {
 			{/* Interests */}
 			{interests?.length > 0 && (
 				<div className="bg-green-50 p-4 rounded-md shadow-sm">
-					<h4 className="text-lg font-semibold text-green-900 mb-3">
-						Interests
-					</h4>
+					<div className="flex justify-between items-center mb-3">
+						<h4 className="text-lg font-semibold text-green-900">
+							Interests
+						</h4>
+						<button
+							onClick={() => navigate("/interests/edit")}
+							className="border px-3 py-1.5 rounded-md text-sm text-green-600 hover:bg-green-100 transition">
+							Edit Interests
+						</button>
+					</div>
 					<div className="flex flex-wrap gap-2">
 						{interests.map((interest, index) => (
 							<span
 								key={index}
-								className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm hover:bg-green-200 transition">
+								className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium shadow-sm">
 								{interest}
+								<button
+									onClick={() =>
+										handleRemoveInterest(interest)
+									}
+									className="ml-2 text-green-600 hover:text-green-800">
+									×
+								</button>
 							</span>
 						))}
 					</div>

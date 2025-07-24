@@ -11,6 +11,8 @@ import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import { EducationManager } from "./components/profile/EducationManager";
 import { useAuth } from "./context/AuthContext";
+import { SkillsManager } from "./components/profile/SkillsManger";
+import { InterestsManager } from "./components/profile/InterestManager";
 
 function App() {
 	const { state } = useAuth();
@@ -74,6 +76,38 @@ function App() {
 								onEducationUpdate={() => {}}
 								education={user?.profile?.education || []}
 							/>{" "}
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/skills/edit"
+					element={
+						<ProtectedRoute
+							requiredRoles={[
+								UserRole.STUDENT,
+								UserRole.EDUCATOR,
+								UserRole.ADMIN,
+							]}>
+							<SkillsManager
+								onSkillsUpdate={() => {}}
+								skills={user?.profile?.skills || []}
+							/>
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/interests/edit"
+					element={
+						<ProtectedRoute
+							requiredRoles={[
+								UserRole.STUDENT,
+								UserRole.EDUCATOR,
+								UserRole.ADMIN,
+							]}>
+							<InterestsManager
+								onInterestsUpdate={() => {}}
+								interests={user?.profile?.interests || []}
+							/>
 						</ProtectedRoute>
 					}
 				/>
