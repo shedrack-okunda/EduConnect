@@ -9,9 +9,12 @@ import HomePage from "./pages/HomePage";
 import Navbar from "./layout/Navbar";
 import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
-import EditEducationPage from "./pages/EditEducationPage";
+import { EducationManager } from "./components/profile/EducationManager";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
+	const { state } = useAuth();
+	const { user } = state;
 	return (
 		<Router>
 			<Navbar />
@@ -67,7 +70,10 @@ function App() {
 								UserRole.EDUCATOR,
 								UserRole.ADMIN,
 							]}>
-							<EditEducationPage />
+							<EducationManager
+								onEducationUpdate={() => {}}
+								education={user?.profile?.education || []}
+							/>{" "}
 						</ProtectedRoute>
 					}
 				/>

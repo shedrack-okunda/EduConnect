@@ -1,42 +1,17 @@
-// import React, { useEffect, useState } from "react";
-// import { profileService } from "../services/profile";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-// import type { IUser } from "../types";
-// import type { IEducation } from "../../../shared/types";
 import { useAuth } from "../context/AuthContext";
+import { EducationDisplay } from "../components/profile/EducationDisplay";
 
 const ProfilePage: React.FC = () => {
-	// const [user, setUser] = useState<IUser | null>(null);
-	// const [education, setEducation] = useState<IEducation[]>([]);
 	const navigate = useNavigate();
 	const { state } = useAuth();
 	const { user } = state;
 
-	// useEffect(() => {
-	// 	const fetchProfile = async () => {
-	// 		try {
-	// 			const data = await profileService.getProfile();
-	// 			setUser(data);
-	// 			setEducation(data.profile.education || []);
-	// 		} catch (error) {
-	// 			console.error("Failed to load profile", error);
-	// 		}
-	// 	};
-
-	// 	fetchProfile();
-	// }, []);
-
 	if (!user) return <p className="p-4">Loading profile...</p>;
 
-	const {
-		firstName,
-		lastName,
-		avatar,
-		bio,
-		skills,
-		interests,
-		education = [],
-	} = user.profile;
+	const { firstName, lastName, avatar, bio, skills, interests } =
+		user.profile;
 
 	return (
 		<div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow space-y-8">
@@ -127,37 +102,12 @@ const ProfilePage: React.FC = () => {
 					</h4>
 					<button
 						onClick={() => navigate("/education/edit")}
-						className="border p-1.5 rounded-md text-sm text-purple-600 hover:bg-white cursor-pointer ">
-						{education.length > 0
-							? "Edit Education"
-							: "Add Education"}
+						className="border px-3 py-1.5 rounded-md text-sm text-purple-600 hover:bg-purple-100 transition">
+						Edit Education
 					</button>
 				</div>
 
-				{education.length > 0 ? (
-					education.map((edu, idx) => (
-						<div key={idx} className="mb-2 text-lg">
-							<p className="text-md font-bold text-purple-900">
-								{edu.institution}
-							</p>
-							<p className="text-md font-medium text-purple-800">
-								{edu.degree}
-							</p>
-							<p className="text-sm font-semibold text-purple-600">
-								{new Date(edu.startDate).toLocaleDateString()} -{" "}
-								{edu.current
-									? "Present"
-									: edu.endDate
-									? new Date(edu.endDate).toLocaleDateString()
-									: "N/A"}
-							</p>
-						</div>
-					))
-				) : (
-					<p className="text-sm text-gray-600 italic">
-						No education information added yet.
-					</p>
-				)}
+				<EducationDisplay education={user?.profile?.education || []} />
 			</div>
 		</div>
 	);

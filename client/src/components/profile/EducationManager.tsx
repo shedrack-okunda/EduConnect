@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { profileService } from "../../services/profile";
 import type { IEducation } from "../../../../shared/types";
+import { useNavigate } from "react-router-dom";
 
 interface EducationManagerProps {
 	education: IEducation[];
@@ -22,6 +23,7 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 	});
 	const [isLoading, setIsLoading] = useState(false);
 	const { updateUser, refreshUser } = useAuth();
+	const navigate = useNavigate();
 
 	const handleAddEducation = async () => {
 		if (!formData.institution.trim()) return;
@@ -35,6 +37,7 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 			onEducationUpdate(updatedEducation);
 			await refreshUser();
 			updateUser(updatedUser);
+			navigate("/profile");
 			setFormData({
 				institution: "",
 				degree: "",
@@ -70,8 +73,8 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 	};
 
 	return (
-		<div className="space-y-4 bg-purple-50 p-4 rounded-lg">
-			<label className="block text-sm font-medium text-gray-700">
+		<div className="mt-20  space-y-4 bg-purple-50 p-4 rounded-lg">
+			<label className="block text-lg font-bold text-gray-700">
 				Education
 			</label>
 
@@ -148,7 +151,7 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 			<button
 				onClick={handleAddEducation}
 				disabled={isLoading}
-				className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
+				className="flex px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
 				Add Education
 			</button>
 
