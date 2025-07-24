@@ -35,11 +35,9 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 			let updatedEducation;
 
 			if (editIndex !== null) {
-				// Edit mode: update existing item
 				updatedEducation = [...education];
 				updatedEducation[editIndex] = formData;
 			} else {
-				// Add mode
 				updatedEducation = [...education, formData];
 			}
 
@@ -212,7 +210,7 @@ export const EducationManager: React.FC<EducationManagerProps> = ({
 						<div className="flex gap-2 items-center">
 							<button
 								onClick={() => handleEdit(index)}
-								className="text-blue-600 hover:text-blue-800 text-sm font-medium underline">
+								className="text-blue-600 border rounded p-2 hover:text-blue-800 text-sm font-medium cursor-pointer">
 								Edit
 							</button>
 							<button

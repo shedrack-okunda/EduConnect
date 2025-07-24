@@ -50,18 +50,18 @@ class ProfileService {
 	}
 
 	// Add education
-	async addEducation(education: IEducation): Promise<IUser> {
-		try {
-			const response = await apiClient.post(
-				"/profile/education",
-				education
-			);
-			return response.data.data;
-		} catch (error) {
-			console.error(error);
-			throw new Error("Failed to add education");
-		}
-	}
+	// async addEducation(education: IEducation): Promise<IUser> {
+	// 	try {
+	// 		const response = await apiClient.post(
+	// 			"/profile/education",
+	// 			education
+	// 		);
+	// 		return response.data.data;
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 		throw new Error("Failed to add education");
+	// 	}
+	// }
 
 	// Replace entire education array
 	async updateEducation(education: IEducation[]): Promise<IUser> {
@@ -77,12 +77,11 @@ class ProfileService {
 	}
 
 	// Add experience
-	async addExperience(experience: IExperience): Promise<IUser> {
+	async updateExperience(experience: IExperience[]): Promise<IUser> {
 		try {
-			const response = await apiClient.post(
-				"/profile/experience",
-				experience
-			);
+			const response = await apiClient.put("/profile/experience", {
+				experience,
+			});
 			return response.data.data;
 		} catch (error) {
 			console.error(error);

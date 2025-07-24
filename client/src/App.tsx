@@ -13,6 +13,7 @@ import { EducationManager } from "./components/profile/EducationManager";
 import { useAuth } from "./context/AuthContext";
 import { SkillsManager } from "./components/profile/SkillsManger";
 import { InterestsManager } from "./components/profile/InterestManager";
+import { ExperienceManager } from "./components/profile/ExperienceManger";
 
 function App() {
 	const { state } = useAuth();
@@ -107,6 +108,17 @@ function App() {
 							<InterestsManager
 								onInterestsUpdate={() => {}}
 								interests={user?.profile?.interests || []}
+							/>
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/experience/edit"
+					element={
+						<ProtectedRoute>
+							<ExperienceManager
+								onExperienceUpdate={() => {}}
+								experience={user?.profile?.experience || []}
 							/>
 						</ProtectedRoute>
 					}

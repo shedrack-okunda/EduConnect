@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { EducationDisplay } from "../components/profile/EducationDisplay";
 import { profileService } from "../services/profile";
+import { ExperienceDisplay } from "../components/profile/ExperienceDisplay";
 
 const ProfilePage: React.FC = () => {
 	const navigate = useNavigate();
@@ -157,6 +158,23 @@ const ProfilePage: React.FC = () => {
 				</div>
 
 				<EducationDisplay education={user?.profile?.education || []} />
+			</div>
+
+			<div className="bg-violet-50 p-4 rounded-md shadow-sm">
+				<div className="flex justify-between items-center mb-3">
+					<h4 className="text-lg font-semibold text-violet-700">
+						Experience
+					</h4>
+					<button
+						onClick={() => navigate("/experience/edit")}
+						className="border px-3 py-1.5 rounded-md text-sm text-violet-600 hover:bg-violet-100 transition">
+						Edit Experience
+					</button>
+				</div>
+
+				<ExperienceDisplay
+					experience={user?.profile?.experience || []}
+				/>
 			</div>
 		</div>
 	);
