@@ -23,5 +23,6 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": ["src", "../shared"]
+	"include": ["src", "../shared"],
+	"exclude": ["../server"]
 }

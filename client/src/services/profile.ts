@@ -1,4 +1,4 @@
-import type { IEducation, IExperience } from "../../../server/src/types";
+import type { IEducation, IExperience } from "../../../shared/types";
 import type { IUser, IUserProfile } from "../types";
 import { apiClient } from "../utils/api";
 
@@ -48,20 +48,6 @@ class ProfileService {
 			throw new Error("Failed to update interests");
 		}
 	}
-
-	// Add education
-	// async addEducation(education: IEducation): Promise<IUser> {
-	// 	try {
-	// 		const response = await apiClient.post(
-	// 			"/profile/education",
-	// 			education
-	// 		);
-	// 		return response.data.data;
-	// 	} catch (error) {
-	// 		console.error(error);
-	// 		throw new Error("Failed to add education");
-	// 	}
-	// }
 
 	// Replace entire education array
 	async updateEducation(education: IEducation[]): Promise<IUser> {
