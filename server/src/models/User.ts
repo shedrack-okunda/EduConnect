@@ -12,7 +12,7 @@ import bcrypt from "bcryptjs";
 
 // Extend IUser with Document for Mongoose
 export interface IUserDocument extends IUser, Document {
-	_id: Types.ObjectId;
+	_id: string;
 	isModified(path: string): boolean;
 	comparePassword(candidatePassword: string): Promise<boolean>;
 }
