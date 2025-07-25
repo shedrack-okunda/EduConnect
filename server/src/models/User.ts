@@ -4,11 +4,8 @@ import mongoose, {
 	Schema,
 	Document,
 	CallbackWithoutResultAndOptionalError,
-	Types,
 } from "mongoose";
 import bcrypt from "bcryptjs";
-
-// export IUserDocument = Document & IUser;
 
 // Extend IUser with Document for Mongoose
 export interface IUserDocument extends IUser, Document {
