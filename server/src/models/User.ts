@@ -92,7 +92,7 @@ const UserSchema = new Schema<IUserDocument>(
 	{
 		timestamps: true,
 		toJSON: {
-			transform: (_doc, ret: any) => {
+			transform: (_doc: IUserDocument, ret: any) => {
 				delete ret.password;
 				return ret;
 			},
