@@ -39,7 +39,7 @@ const Dashboard = () => {
 	}
 
 	return (
-		<div className="max-w-4xl mx-auto p-6 space-y-6">
+		<div className="mt-15 max-w-4xl mx-auto p-6 space-y-6">
 			<h1 className="text-2xl font-bold text-gray-800">
 				Welcome, {user?.profile?.firstName}
 			</h1>

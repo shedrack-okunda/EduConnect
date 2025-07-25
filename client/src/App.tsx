@@ -14,6 +14,8 @@ import { SkillsManager } from "./components/profile/SkillsManger";
 import { InterestsManager } from "./components/profile/InterestManager";
 import { ExperienceManager } from "./components/profile/ExperienceManger";
 import EduConnectLanding from "./pages/HomePage";
+import StudentDashboard from "./layout/StudentDashboard";
+import EducatorDashboard from "./layout/EducatorDashboard";
 
 function App() {
 	const { state } = useAuth();
@@ -37,7 +39,25 @@ function App() {
 							<Dashboard />
 						</ProtectedRoute>
 					}
-				/>{" "}
+				/>
+				<Route
+					path="/student"
+					element={
+						<ProtectedRoute
+							requiredRoles={[UserRole.STUDENT, UserRole.ADMIN]}>
+							<StudentDashboard />
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/educator"
+					element={
+						<ProtectedRoute
+							requiredRoles={[UserRole.EDUCATOR, UserRole.ADMIN]}>
+							<EducatorDashboard />
+						</ProtectedRoute>
+					}
+				/>
 				<Route
 					path="/profile"
 					element={

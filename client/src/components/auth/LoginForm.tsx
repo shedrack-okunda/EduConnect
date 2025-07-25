@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ArrowLeft, BookOpen, Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { UserRole } from "../../types";
 
 interface LoginFormData {
 	email: string;
@@ -29,7 +30,14 @@ export const LoginForm: React.FC = () => {
 		try {
 			setError("");
 			await login(data.email, data.password);
-			navigate("/dashboard");
+			const role = state.user?.role;
+			if (role === UserRole.STUDENT) {
+				navigate("/student");
+			} else if (role === UserRole.EDUCATOR) {
+				navigate("/educator");
+			} else if (role === UserRole.ADMIN) {
+				navigate("/dashboard");
+			}
 		} catch (error) {
 			console.error(error);
 			setError("Login failed. Please try again.");

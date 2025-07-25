@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BookOpen, Users, Award, ArrowRight, Star, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function EduConnectLanding() {
+const EduConnectLanding: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const [activeFeature, setActiveFeature] = useState(0);
 
@@ -85,7 +85,7 @@ export default function EduConnectLanding() {
 			</nav>
 
 			{/* Hero Section */}
-			<div className="relative z-10 max-w-7xl mx-auto px-6 pt-20 pb-32">
+			<div className="relative z-10 max-w-7xl mx-auto px-6 pt-10 pb-32">
 				<div className="text-center">
 					<div
 						className={`transition-all duration-1000 delay-300 ${
@@ -261,4 +261,6 @@ export default function EduConnectLanding() {
 			</footer>
 		</div>
 	);
-}
+};
+
+export default EduConnectLanding;
