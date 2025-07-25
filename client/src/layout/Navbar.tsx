@@ -9,8 +9,8 @@ const Navbar = () => {
 	if (!isAuthenticated || !user) return null;
 
 	const handleLogout = () => {
-		logout(); // calls the context logout
-		navigate("/login"); // redirects to login
+		logout();
+		navigate("/");
 	};
 
 	return (

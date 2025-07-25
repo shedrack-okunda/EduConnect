@@ -5,7 +5,6 @@ import Dashboard from "./layout/Dashboard";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import { UserRole } from "./types";
-import HomePage from "./pages/HomePage";
 import Navbar from "./layout/Navbar";
 import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
@@ -14,6 +13,7 @@ import { useAuth } from "./context/AuthContext";
 import { SkillsManager } from "./components/profile/SkillsManger";
 import { InterestsManager } from "./components/profile/InterestManager";
 import { ExperienceManager } from "./components/profile/ExperienceManger";
+import EduConnectLanding from "./pages/HomePage";
 
 function App() {
 	const { state } = useAuth();
@@ -22,7 +22,7 @@ function App() {
 		<Router>
 			<Navbar />
 			<Routes>
-				<Route path="/" element={<HomePage />} />
+				<Route path="/" element={<EduConnectLanding />} />
 				<Route path="/register" element={<RegisterForm />} />
 				<Route path="/login" element={<LoginForm />} />
 				<Route
