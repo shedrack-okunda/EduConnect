@@ -20,7 +20,6 @@ export enum UserStatus {
 }
 
 export interface IUser {
-	_id: string;
 	email: string;
 	role: UserRole;
 	status: UserStatus;

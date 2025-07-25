@@ -2,7 +2,6 @@ import type { IUserDocument } from "../models/User";
 
 // Base User Interface
 export interface IUser {
-	_id: string;
 	email: string;
 	password: string;
 	role: UserRole;

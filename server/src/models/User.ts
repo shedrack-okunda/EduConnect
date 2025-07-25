@@ -1,5 +1,10 @@
-import { IUser, UserRole, UserStatus } from "../types";
-import mongoose, { Schema } from "mongoose";
+import { UserRole, UserStatus } from "../types";
+import type { IUser } from "../types";
+import mongoose, {
+	Schema,
+	Document,
+	CallbackWithoutResultAndOptionalError,
+} from "mongoose";
 import bcrypt from "bcryptjs";
 
 // Extend IUser with Document for Mongoose
@@ -107,17 +112,23 @@ UserSchema.index({ "profile.skills": 1 });
 UserSchema.index({ "profile.interests": 1 });
 
 // Pre-save middleware to hash password
-UserSchema.pre("save", async function (next) {
-	if (!this.isModified("password")) return next();
+UserSchema.pre<IUserDocument>(
+	"save",
+	async function (
+		this: IUserDocument,
+		next: CallbackWithoutResultAndOptionalError
+	) {
+		if (!this.isModified("password")) return next();
 
-	try {
-		const salt = await bcrypt.genSalt(12);
-		this.password = await bcrypt.hash(this.password, salt);
-		next();
-	} catch (error) {
-		next(error as Error);
+		try {
+			const salt = await bcrypt.genSalt(12);
+			this.password = await bcrypt.hash(this.password, salt);
+			next();
+		} catch (error) {
+			next(error as Error);
+		}
 	}
-});
+);
 
 // Instance method to compare password
 UserSchema.methods.comparePassword = async function (
