@@ -7,6 +7,8 @@ import mongoose, {
 } from "mongoose";
 import bcrypt from "bcryptjs";
 
+export interface IUserDocument extends Document, IUser {}
+
 // Extend IUser with Document for Mongoose
 export interface IUserDocument extends IUser, Document {
 	comparePassword(candidatePassword: string): Promise<boolean>;
