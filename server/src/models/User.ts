@@ -11,6 +11,7 @@ export interface IUserDocument extends Document, IUser {}
 
 // Extend IUser with Document for Mongoose
 export interface IUserDocument extends IUser, Document {
+	isModified(path: string): boolean;
 	comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
