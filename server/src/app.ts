@@ -24,6 +24,9 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("/", (req, res) => {
+	res.send("Wow");
+});
 
 app.listen(port, () => {
 	console.log("Server running on port 5000");

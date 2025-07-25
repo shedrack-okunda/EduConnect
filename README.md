@@ -4,6 +4,18 @@
 
 EduConnect is a comprehensive educational platform that connects learners with educators worldwide, promoting inclusive and quality education for all. The application addresses multiple UN Sustainable Development Goals, particularly SDG 4 (Quality Education) and SDG 10 (Reduced Inequalities).
 
+## Live frontend vercel
+
+```bash
+https://edu-connect-orcin.vercel.app/
+```
+
+## Live backend render
+
+```bash
+https://educonnect-adcj.onrender.com
+```
+
 ## SDG Alignment
 
 ### Primary SDGs Addressed:
