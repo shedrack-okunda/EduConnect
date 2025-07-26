@@ -25,7 +25,7 @@ app.use(morgan("dev"));
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/", (req, res) => {
-	res.send("Wow");
+	res.send("Wow EduConnect is running!");
 });
 
 app.listen(port, () => {

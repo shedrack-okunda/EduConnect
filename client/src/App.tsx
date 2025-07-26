@@ -5,7 +5,7 @@ import Dashboard from "./layout/Dashboard";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import { UserRole } from "./types";
-import Navbar from "./layout/Navbar";
+// import Navbar from "./layout/Navbar";
 import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import { EducationManager } from "./components/profile/EducationManager";
@@ -22,7 +22,7 @@ function App() {
 	const { user } = state;
 	return (
 		<Router>
-			<Navbar />
+			{/* <Navbar /> */}
 			<Routes>
 				<Route path="/" element={<EduConnectLanding />} />
 				<Route path="/register" element={<RegisterForm />} />
