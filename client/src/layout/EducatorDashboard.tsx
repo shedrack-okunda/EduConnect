@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import {
-	BookOpen,
 	Plus,
 	Users,
 	BarChart3,
@@ -14,22 +13,15 @@ import {
 	Upload,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
 
 const EducatorDashboard: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
-	const { state, logout } = useAuth();
+	const { state } = useAuth();
 	const { user } = state;
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		setIsVisible(true);
 	}, []);
-
-	const handleLogout = () => {
-		logout();
-		navigate("/");
-	};
 
 	const myCourses = [
 		{
@@ -126,62 +118,15 @@ const EducatorDashboard: React.FC = () => {
 	];
 
 	return (
-		<div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+		<>
 			{/* Animated Background */}
 			<div className="absolute inset-0 overflow-hidden">
 				<div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
 				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
 			</div>
 
-			{/* Header */}
-			<header
-				className={`fixed w-full z-50 bg-black/20 backdrop-blur-xl border-b border-white/10 transition-all duration-1000 ${
-					isVisible
-						? "translate-y-0 opacity-100"
-						: "-translate-y-10 opacity-0"
-				}`}>
-				<div className="max-w-7xl mx-auto px-6 py-4">
-					<div className="flex items-center justify-between">
-						{/* Logo */}
-						<div className="flex items-center space-x-3">
-							<div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
-								<BookOpen className="w-6 h-6 text-white" />
-							</div>
-							<span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-								EduConnect
-							</span>
-							<span className="px-2 py-1 bg-green-500/20 text-green-400 text-xs rounded-full border border-green-500/30">
-								{user?.role}
-							</span>
-						</div>
-
-						{/* User Actions */}
-						<div className="flex items-center space-x-4">
-							<div className="flex items-center space-x-3 p-2 rounded-xl bg-white/10 hover:bg-white/20 transition-colors duration-300 cursor-pointer">
-								<img
-									src={`https://ui-avatars.com/api/?name=${
-										user?.profile?.firstName || "User"
-									}`}
-									alt="Profile"
-									className="w-8 h-8 rounded-lg object-cover"
-								/>
-								<span className="font-medium">
-									{user?.profile?.firstName || "Educator"}
-								</span>
-							</div>
-
-							<button
-								onClick={handleLogout}
-								className="flex items-center gap-2 px-3 py-1.5 bg-red-500 text-white rounded-md shadow hover:bg-red-600 transition duration-200">
-								Logout
-							</button>
-						</div>
-					</div>
-				</div>
-			</header>
-
 			<div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-				<div className="mt-20 grid lg:grid-cols-4 gap-8">
+				<div className=" grid lg:grid-cols-4 gap-8">
 					<h1 className="text-2xl font-bold text-gray-300">
 						Welcome, {user?.profile?.firstName}
 					</h1>
@@ -468,7 +413,7 @@ const EducatorDashboard: React.FC = () => {
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 
