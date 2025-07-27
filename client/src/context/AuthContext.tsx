@@ -98,9 +98,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 	useEffect(() => {
 		const initializeAuth = async () => {
 			const token = localStorage.getItem("token");
+			const refreshToken = localStorage.getItem("refreshToken");
+
 			if (token) {
 				try {
-					dispatch({ type: "SET_LOADING", payload: true });
 					const user = await authService.getCurrentUser();
 					dispatch({ type: "SET_USER", payload: user });
 					dispatch({ type: "SET_TOKEN", payload: token });
@@ -108,8 +109,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 					console.error(error);
 					localStorage.removeItem("token");
 					localStorage.removeItem("refreshToken");
-				} finally {
-					dispatch({ type: "SET_LOADING", payload: false });
+				}
+			} else if (refreshToken) {
+				try {
+					const { token: newToken, refreshToken: newRefreshToken } =
+						await authService.refreshTokens(refreshToken);
+
+					localStorage.setItem("token", newToken);
+					localStorage.setItem("refreshToken", newRefreshToken);
+
+					const user = await authService.getCurrentUser();
+					dispatch({
+						type: "LOGIN_SUCCESS",
+						payload: {
+							token: newToken,
+							refreshToken: newRefreshToken,
+							user,
+						},
+					});
+				} catch (error) {
+					console.error(error);
+					localStorage.removeItem("refreshToken");
 				}
 			}
 		};

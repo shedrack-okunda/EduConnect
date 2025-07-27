@@ -74,7 +74,9 @@ export const register = async (
 // Login user
 export const login = async (credentials: ILoginDTO): Promise<IAuthResponse> => {
 	try {
-		const user = await User.findOne({ email: credentials.email });
+		const user = await User.findOne({ email: credentials.email }).select(
+			"+password"
+		);
 		if (!user) throw new Error("Invalid credentials");
 		if (user.status !== "active") throw new Error("Account is not active");
 

@@ -41,11 +41,11 @@ class AuthService {
 	}
 
 	// Refresh token
-	async refreshToken(
+	async refreshTokens(
 		refreshToken: string
 	): Promise<{ token: string; refreshToken: string }> {
 		try {
-			const response = await apiClient.post("/auth/refresh", {
+			const response = await apiClient.post("/auth/refresh-token", {
 				refreshToken,
 			});
 			return response.data.data;

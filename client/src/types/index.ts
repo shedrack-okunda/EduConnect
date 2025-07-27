@@ -21,9 +21,12 @@ export enum UserStatus {
 
 export interface IUser {
 	email: string;
+	password: string;
 	role: UserRole;
 	status: UserStatus;
 	profile: IUserProfile;
+	createdAt: Date;
+	updatedAt: Date;
 }
 
 export interface IUserProfile {

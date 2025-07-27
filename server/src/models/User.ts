@@ -28,6 +28,7 @@ const UserSchema = new Schema<IUserDocument>(
 			type: String,
 			required: true,
 			minlength: 8,
+			select: false,
 		},
 		role: {
 			type: String,
@@ -48,6 +49,7 @@ const UserSchema = new Schema<IUserDocument>(
 			bio: { type: String, maxlength: 500 },
 			skills: [{ type: String, trim: true }],
 			interests: [{ type: String, trim: true }],
+			refreshTokens: [{ token: String, createdAt: Date }],
 			education: [
 				{
 					institution: { type: String, required: true },
