@@ -5,7 +5,6 @@ import Dashboard from "./layout/Dashboard";
 import { ProtectedRoute } from "./components/common/ProtectedRoute";
 import UnauthorizedPage from "./pages/UnauthorizedPage";
 import { UserRole } from "./types";
-// import Navbar from "./layout/Navbar";
 import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
 import { EducationManager } from "./components/profile/EducationManager";
@@ -16,19 +15,22 @@ import { ExperienceManager } from "./components/profile/ExperienceManger";
 import EduConnectLanding from "./pages/HomePage";
 import StudentDashboard from "./layout/StudentDashboard";
 import EducatorDashboard from "./layout/EducatorDashboard";
+import Layout from "./layout/Layout";
 
 function App() {
 	const { state } = useAuth();
 	const { user } = state;
 	return (
 		<Router>
-			{/* <Navbar /> */}
 			<Routes>
+				{/* public routes */}
 				<Route path="/" element={<EduConnectLanding />} />
 				<Route path="/register" element={<RegisterForm />} />
 				<Route path="/login" element={<LoginForm />} />
+				<Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+				{/* protected routes  */}
 				<Route
-					path="/dashboard"
 					element={
 						<ProtectedRoute
 							requiredRoles={[
@@ -36,114 +38,59 @@ function App() {
 								UserRole.EDUCATOR,
 								UserRole.ADMIN,
 							]}>
-							<Dashboard />
+							<Layout />
 						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/student"
-					element={
-						<ProtectedRoute
-							requiredRoles={[UserRole.STUDENT, UserRole.ADMIN]}>
-							<StudentDashboard />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/educator"
-					element={
-						<ProtectedRoute
-							requiredRoles={[UserRole.EDUCATOR, UserRole.ADMIN]}>
-							<EducatorDashboard />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/profile"
-					element={
-						<ProtectedRoute
-							requiredRoles={[
-								UserRole.STUDENT,
-								UserRole.EDUCATOR,
-								UserRole.ADMIN,
-							]}>
-							<ProfilePage />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/profile/edit"
-					element={
-						<ProtectedRoute
-							requiredRoles={[
-								UserRole.STUDENT,
-								UserRole.EDUCATOR,
-								UserRole.ADMIN,
-							]}>
-							<EditProfilePage />
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/education/edit"
-					element={
-						<ProtectedRoute
-							requiredRoles={[
-								UserRole.STUDENT,
-								UserRole.EDUCATOR,
-								UserRole.ADMIN,
-							]}>
+					}>
+					<Route path="/dashboard" element={<Dashboard />} />
+
+					<Route path="/student" element={<StudentDashboard />} />
+
+					<Route path="/educator" element={<EducatorDashboard />} />
+
+					<Route path="/profile" element={<ProfilePage />} />
+
+					<Route path="/profile/edit" element={<EditProfilePage />} />
+
+					<Route
+						path="/education/edit"
+						element={
 							<EducationManager
 								onEducationUpdate={() => {}}
 								education={user?.profile?.education || []}
-							/>{" "}
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/skills/edit"
-					element={
-						<ProtectedRoute
-							requiredRoles={[
-								UserRole.STUDENT,
-								UserRole.EDUCATOR,
-								UserRole.ADMIN,
-							]}>
+							/>
+						}
+					/>
+
+					<Route
+						path="/skills/edit"
+						element={
 							<SkillsManager
 								onSkillsUpdate={() => {}}
 								skills={user?.profile?.skills || []}
 							/>
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/interests/edit"
-					element={
-						<ProtectedRoute
-							requiredRoles={[
-								UserRole.STUDENT,
-								UserRole.EDUCATOR,
-								UserRole.ADMIN,
-							]}>
+						}
+					/>
+
+					<Route
+						path="/interests/edit"
+						element={
 							<InterestsManager
 								onInterestsUpdate={() => {}}
 								interests={user?.profile?.interests || []}
 							/>
-						</ProtectedRoute>
-					}
-				/>
-				<Route
-					path="/experience/edit"
-					element={
-						<ProtectedRoute>
+						}
+					/>
+
+					<Route
+						path="/experience/edit"
+						element={
 							<ExperienceManager
 								onExperienceUpdate={() => {}}
 								experience={user?.profile?.experience || []}
 							/>
-						</ProtectedRoute>
-					}
-				/>
-				<Route path="/unauthorized" element={<UnauthorizedPage />} />
+						}
+					/>
+				</Route>
 			</Routes>
 		</Router>
 	);
