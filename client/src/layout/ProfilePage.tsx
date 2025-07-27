@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { EducationDisplay } from "../components/profile/EducationDisplay";
 import { profileService } from "../services/profile";
 import { ExperienceDisplay } from "../components/profile/ExperienceDisplay";
+import { ArrowLeft } from "lucide-react";
 
 const ProfilePage: React.FC = () => {
 	const navigate = useNavigate();
@@ -38,9 +39,27 @@ const ProfilePage: React.FC = () => {
 	};
 
 	return (
-		<div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow space-y-8">
-			{/* Profile Header */}
-			<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+		<div className="max-w-4xl mx-auto mt-10 space-y-8 ">
+			<div className="flex items-center gap-2 bg-purple-50 border border-purple-100 rounded-md p-2 shadow-sm w-fit">
+				<button
+					onClick={() => {
+						if (user.role === "student") {
+							navigate("/student");
+						} else if (user.role === "educator") {
+							navigate("/educator");
+						} else if (user.role === "admin") {
+							navigate("/dashboard");
+						}
+					}}
+					className="flex items-center gap-2 text-purple-700 hover:text-purple-900 transition">
+					<ArrowLeft className="w-5 h-5" />
+					<span className="text-sm font-medium">
+						Back to Dashboard
+					</span>
+				</button>
+			</div>
+
+			<div className="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow space-y-8 text-gray-800">
 				<div className="flex items-center gap-4">
 					{avatar ? (
 						<img
@@ -59,7 +78,7 @@ const ProfilePage: React.FC = () => {
 							{firstName} {lastName}
 						</h2>
 						<p className="text-gray-600">{user.email}</p>
-						<span className="text-sm inline-block px-2 py-1 mt-1 bg-gray-100 text-gray-800 rounded">
+						<span className="px-2 py-1 bg-green-900 text-green-200 text-xs rounded-full border border-green-500/30">
 							{user.role.charAt(0).toUpperCase() +
 								user.role.slice(1)}
 						</span>
@@ -68,7 +87,7 @@ const ProfilePage: React.FC = () => {
 
 				<button
 					onClick={() => navigate("/profile/edit")}
-					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+					className="px-4 py-2 bg-purple-700 text-white rounded-md hover:bg-purple-800 transition">
 					Edit Profile
 				</button>
 			</div>
