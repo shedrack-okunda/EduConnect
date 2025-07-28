@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import type { IUserDocument } from "../models/User";
 
 // Base User Interface
@@ -110,4 +111,122 @@ declare global {
 			user?: IUserDocument;
 		}
 	}
+}
+
+// Course interface
+export interface ICourse {
+	title: string;
+	description: string;
+	instructorId: Types.ObjectId;
+	coInstructors?: Types.ObjectId[];
+	category: string;
+	subcategory?: string;
+	level: "beginner" | "intermediate" | "advanced";
+	language: string;
+	duration: number;
+	modules: Types.ObjectId[];
+	totalLessons: number;
+	totalDuration: number;
+	thumbnail: string;
+	previewVideo?: string;
+	status: "draft" | "published" | "archived";
+	isPublic: boolean;
+	publishedAt?: Date;
+	prerequisites: string[];
+	learningOutcomes: string[];
+	targetAudience: string[];
+	enrollmentCount: number;
+	rating: number;
+	reviewCount: number;
+	tags: string[];
+	slug: string;
+	createdAt: Date;
+	updatedAt: Date;
+}
+
+export interface ICourseModule {
+	courseId: Types.ObjectId;
+	title: string;
+	description: string;
+	order: number;
+	lessons: Types.ObjectId[];
+	duration: number;
+	isPreview: boolean;
+	createdAt?: Date;
+	updatedAt?: Date;
+}
+
+export interface ILesson {
+	moduleId: Types.ObjectId;
+	title: string;
+	description: string;
+	order: number;
+	type: "video" | "text" | "quiz" | "assignment" | "resource";
+	content: ILessonContent;
+	duration: number;
+	isPreview: boolean;
+	createdAt?: Date;
+	updatedAt?: Date;
+}
+
+export interface ILessonContent {
+	videoUrl?: string;
+	videoThumbnail?: string;
+	textContent?: string;
+	questions?: IQuizQuestion[];
+	instructions?: string;
+	submissionType?: "text" | "file" | "url";
+	resources?: IResource[];
+}
+
+export interface IQuizQuestion {
+	question: string;
+	options: string[];
+	correctAnswerIndex: number;
+}
+
+export interface IResource {
+	title: string;
+	url: string;
+}
+
+// Course DTO's
+export interface ICourseDTO {
+	title: string;
+	description: string;
+	instructorId: Types.ObjectId;
+	coInstructors?: Types.ObjectId[];
+	category: string;
+	subcategory?: string;
+	level: "beginner" | "intermediate" | "advanced";
+	language: string;
+	duration: number;
+	thumbnail?: string;
+	previewVideo?: string;
+	prerequisites: string[];
+	learningOutcomes: string[];
+	targetAudience: string[];
+	tags: string[];
+	slug: string;
+	isPublic: boolean;
+	status: "draft" | "published" | "archived";
+}
+
+export interface ICourseModuleDTO {
+	courseId: Types.ObjectId;
+	title: string;
+	description: string;
+	order: number;
+	isPreview: boolean;
+}
+
+export interface ILessonDTO {
+	moduleId: Types.ObjectId;
+	title: string;
+	description: string;
+	order: number;
+	type: "video" | "text" | "quiz" | "assignment" | "resource";
+	duration: number;
+	isPreview: boolean;
+	content: ILessonContent;
 }

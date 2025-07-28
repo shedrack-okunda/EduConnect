@@ -8,6 +8,9 @@ import cors from "cors";
 import morgan from "morgan";
 import "./types/index";
 import profileRoutes from "./routes/profile";
+import courseRoutes from "./routes/course";
+import courseModuleRoutes from "./routes/courseModule";
+import lessonsRoutes from "./routes/lessons";
 
 const port = process.env.PORT;
 
@@ -30,6 +33,9 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
+app.use("api/courses", courseRoutes);
+app.use("/api/modules", courseModuleRoutes);
+app.use("/api/lessons", lessonsRoutes);
 app.use("/", (req, res) => {
 	res.send("Wow EduConnect is running!");
 });
