@@ -5,16 +5,15 @@ import type { ILesson, ILessonDTO } from "../../../../shared/types";
 import { lessonService } from "../../services/lesson";
 
 interface LessonFormProps {
-	lesson?: ILesson;
 	onSuccess: () => void;
 	existingLesson?: ILesson | null;
 	moduleId: string;
 }
 
 export const LessonForm: React.FC<LessonFormProps> = ({
-	lesson,
 	onSuccess,
 	moduleId,
+	existingLesson,
 }) => {
 	const {
 		register,
@@ -24,7 +23,7 @@ export const LessonForm: React.FC<LessonFormProps> = ({
 	} = useForm<ILessonDTO>();
 
 	useEffect(() => {
-		if (lesson) {
+		if (existingLesson) {
 			const {
 				title,
 				description,
@@ -32,9 +31,8 @@ export const LessonForm: React.FC<LessonFormProps> = ({
 				type,
 				duration,
 				isPreview,
-				content,
 				moduleId,
-			} = lesson;
+			} = existingLesson;
 			reset({
 				title,
 				description,
@@ -42,18 +40,17 @@ export const LessonForm: React.FC<LessonFormProps> = ({
 				type,
 				duration,
 				isPreview,
-				content,
 				moduleId,
 			});
 		} else {
 			reset();
 		}
-	}, [lesson, reset, moduleId]);
+	}, [existingLesson, reset, moduleId]);
 
 	const onSubmit = async (data: ILessonDTO) => {
 		try {
-			if (lesson) {
-				await lessonService.updateLesson(lesson._id, data);
+			if (existingLesson?._id) {
+				await lessonService.updateLesson(existingLesson._id, data);
 			} else {
 				console.log(data);
 				await lessonService.createLesson({ ...data, moduleId });
@@ -153,7 +150,7 @@ export const LessonForm: React.FC<LessonFormProps> = ({
 			<button
 				type="submit"
 				className="bg-blue-600 text-white px-4 py-2 rounded">
-				{lesson ? "Update Lesson" : "Create Lesson"}
+				{existingLesson ? "Update Lesson" : "Create Lesson"}
 			</button>
 		</form>
 	);

@@ -82,7 +82,7 @@ export const CourseDashboard: React.FC = () => {
 			</div>
 
 			{showForm && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+				<div className="fixed mb-200 inset-0 bg-opacity-50 flex items-center justify-center z-[9999]">
 					<div className="bg-white/10 backdrop-blur-md text-white rounded-2xl p-6 w-full max-w-xl border border-white/20 shadow-xl relative">
 						<button
 							className="absolute top-3 right-3 text-gray-500 hover:text-black"

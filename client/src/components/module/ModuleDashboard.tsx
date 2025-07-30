@@ -65,7 +65,7 @@ export const ModuleDashboard: React.FC<ModuleDashboardProps> = ({
 				{modules.map((mod) => (
 					<div
 						key={mod._id}
-						className="bg-white shadow-md rounded-2xl p-4 border border-gray-100 hover:shadow-lg transition-all duration-300">
+						className="bg-white/10 backdrop-blur-md text-white rounded-2xl p-4 border border-white/20 shadow-lg hover:shadow-2xl transition-all duration-300">
 						<h3 className="text-lg font-semibold mb-2">
 							{mod.title}
 							<button onClick={() => onModuleSelect?.(mod._id)}>
@@ -98,7 +98,7 @@ export const ModuleDashboard: React.FC<ModuleDashboardProps> = ({
 			</div>
 
 			{showForm && (
-				<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[9999]">
+				<div className="fixed inset-0 bg-opacity-50 flex items-center justify-center z-[9999]">
 					<div className="bg-white/10 backdrop-blur-md text-white rounded-2xl p-6 w-full max-w-xl border border-white/20 shadow-xl relative">
 						<button
 							className="absolute top-3 right-3 text-gray-500 hover:text-black"
