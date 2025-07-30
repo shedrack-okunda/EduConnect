@@ -7,7 +7,7 @@ export const createCourse = async (
 	educatorId: string
 ): Promise<ICourse> => {
 	try {
-		const course = new Course({ ...courseData, eductor: educatorId });
+		const course = new Course({ ...courseData, instructorId: educatorId });
 		await course.save();
 		return course;
 	} catch (error: any) {
@@ -29,7 +29,7 @@ export const getCourseById = async (courseId: string): Promise<ICourse> => {
 // Get all courses (optionally by educator)
 export const getCourses = async (educatorId?: string): Promise<ICourse[]> => {
 	try {
-		const filter = educatorId ? { educator: educatorId } : {};
+		const filter = educatorId ? { instructorId: educatorId } : {};
 		return await Course.find(filter).sort({ createdAt: -1 });
 	} catch (error: any) {
 		throw new Error(`Failed to fetch courses: ${error.message}`);

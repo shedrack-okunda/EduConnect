@@ -12,8 +12,6 @@ const CourseSchema = new Schema<ICourseDocument>(
 			ref: "User",
 			required: true,
 		},
-		coInstructors: [{ type: Schema.Types.ObjectId, ref: "User" }],
-
 		category: { type: String, required: true },
 		subcategory: { type: String },
 		level: {
@@ -23,14 +21,10 @@ const CourseSchema = new Schema<ICourseDocument>(
 		},
 		language: { type: String, required: true },
 		duration: { type: Number, required: true },
-
 		modules: [{ type: Schema.Types.ObjectId, ref: "CourseModule" }],
 		totalLessons: { type: Number, default: 0 },
 		totalDuration: { type: Number, default: 0 },
-
-		thumbnail: { type: String, required: true },
 		previewVideo: { type: String },
-
 		status: {
 			type: String,
 			enum: ["draft", "published", "archived"],
@@ -38,15 +32,12 @@ const CourseSchema = new Schema<ICourseDocument>(
 		},
 		isPublic: { type: Boolean, default: false },
 		publishedAt: { type: Date },
-
 		prerequisites: [{ type: String }],
 		learningOutcomes: [{ type: String }],
 		targetAudience: [{ type: String }],
-
 		enrollmentCount: { type: Number, default: 0 },
 		rating: { type: Number, default: 0 },
 		reviewCount: { type: Number, default: 0 },
-
 		tags: [{ type: String }],
 		slug: { type: String, required: true, unique: true },
 	},

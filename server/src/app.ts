@@ -33,7 +33,7 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
-app.use("api/courses", courseRoutes);
+app.use("/api/courses", courseRoutes);
 app.use("/api/modules", courseModuleRoutes);
 app.use("/api/lessons", lessonsRoutes);
 app.use("/", (req, res) => {
