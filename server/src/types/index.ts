@@ -162,7 +162,7 @@ export interface ILesson {
 	description: string;
 	order: number;
 	type: "video" | "text" | "quiz" | "assignment" | "resource";
-	content: ILessonContent;
+	// content: ILessonContent;
 	duration: number;
 	isPreview: boolean;
 	createdAt?: Date;
@@ -228,5 +228,5 @@ export interface ILessonDTO {
 	type: "video" | "text" | "quiz" | "assignment" | "resource";
 	duration: number;
 	isPreview: boolean;
-	content: ILessonContent;
+	// content: ILessonContent;
 }

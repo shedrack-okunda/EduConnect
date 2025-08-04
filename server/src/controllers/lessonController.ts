@@ -6,12 +6,18 @@ import {
 	deleteLesson,
 } from "../services/lesson";
 import { ILessonDTO } from "../types";
+import mongoose from "mongoose";
 
 // Create lesson
 export const createLessonController = async (req: Request, res: Response) => {
 	try {
-		const lessonData: ILessonDTO = req.body;
-		const lesson = await createLesson(lessonData);
+		const lessonData = req.body;
+		const castedLessonData: ILessonDTO = {
+			...lessonData,
+			moduleId: new mongoose.Types.ObjectId(lessonData.moduleId),
+		};
+
+		const lesson = await createLesson(castedLessonData);
 
 		res.status(201).json({
 			success: true,

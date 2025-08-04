@@ -207,5 +207,5 @@ export interface ILessonDTO {
 	type: "video" | "text" | "quiz" | "assignment" | "resource";
 	duration: number;
 	isPreview: boolean;
-	content: ILessonContent;
+	// content: ILessonContent;
 }

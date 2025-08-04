@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { CourseDashboard } from "../components/course/CourseDashboard";
-import { LessonDashboard } from "../components/lesson/LessonDashboard";
+// import { LessonDashboard } from "../components/lesson/LessonDashboard";
 import { courseService } from "../services/course";
 import { ModuleDashboard } from "../components/module/ModuleDashboard";
 
@@ -9,6 +9,7 @@ const EducatorDashboard: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
 	const [courseId, setCourseId] = useState<string>("");
 	const [moduleId, setModuleId] = useState<string>("");
+	console.log(moduleId);
 	const { state } = useAuth();
 	const { user } = state;
 
@@ -77,7 +78,7 @@ const EducatorDashboard: React.FC = () => {
 								/>
 							)}
 
-							<LessonDashboard moduleId={moduleId} />
+							{/* <LessonDashboard moduleId={moduleId} /> */}
 						</div>
 					</div>
 				</div>
