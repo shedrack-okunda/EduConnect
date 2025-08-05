@@ -6,7 +6,8 @@ import {
 	updateCourse,
 	deleteCourse,
 } from "../services/course";
-import { ICourseDTO } from "../types";
+import { ICourseDTO, IUser, UserRole } from "../types";
+import { Course } from "../models/Course";
 
 // Create new course
 export const createCourseController = async (req: Request, res: Response) => {
@@ -33,7 +34,18 @@ export const createCourseController = async (req: Request, res: Response) => {
 // Get all courses
 export const getCoursesController = async (req: Request, res: Response) => {
 	try {
-		const courses = await getCourses();
+		// Optionally: check user's role
+		const user = req.user as IUser; // if using auth middleware
+
+		let query = Course.find().sort({ createdAt: -1 });
+
+		// Only populate if the requester is a student
+		if (user?.role === UserRole.STUDENT) {
+			query = query.populate("instructorId", "profile");
+		}
+
+		const courses = await query;
+
 		res.status(200).json({
 			success: true,
 			message: "Courses retrieved successfully",

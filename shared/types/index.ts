@@ -106,7 +106,7 @@ export interface ICourse {
 	_id: string;
 	title: string;
 	description: string;
-	instructorId: string;
+	instructorId: string | IUser;
 	category: string;
 	subcategory?: string;
 	level: "beginner" | "intermediate" | "advanced";
