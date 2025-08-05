@@ -5,9 +5,11 @@ import {
 	getCourseById,
 	updateCourse,
 	deleteCourse,
+	enrollInCourse,
 } from "../services/course";
 import { ICourseDTO, IUser, UserRole } from "../types";
 import { Course } from "../models/Course";
+import { User } from "../models/User";
 
 // Create new course
 export const createCourseController = async (req: Request, res: Response) => {
@@ -105,6 +107,55 @@ export const deleteCourseController = async (req: Request, res: Response) => {
 		res.status(200).json({
 			success: true,
 			message: "Course deleted successfully",
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// POST /courses/enroll/:courseId
+export const enrollInCourseController = async (req: Request, res: Response) => {
+	try {
+		const { courseId } = req.params;
+		const studentId = req.user?._id;
+
+		if (!studentId) throw new Error("Student ID not found");
+
+		const enrolledCourse = await enrollInCourse(studentId, courseId);
+
+		res.status(200).json({
+			success: true,
+			message: "Successfully enrolled in course",
+			data: enrolledCourse,
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// GET /courses/enrolled
+export const getEnrolledCoursesController = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const studentId = req.user?._id;
+		if (!studentId) throw new Error("Student ID not found");
+
+		const user = await User.findById(studentId).populate("enrolledCourses");
+
+		if (!user) throw new Error("Student not found");
+
+		res.status(200).json({
+			success: true,
+			message: "Enrolled courses retrieved successfully",
+			data: user.enrolledCourses,
 		});
 	} catch (error: any) {
 		res.status(400).json({

@@ -1,4 +1,5 @@
-import { Course } from "../models/Course";
+import { Course, ICourseDocument } from "../models/Course";
+import { User } from "../models/User";
 import type { ICourse, ICourseDTO } from "../types";
 
 // Create a course
@@ -59,5 +60,30 @@ export const deleteCourse = async (courseId: string): Promise<void> => {
 		if (!deleted) throw new Error("Course not found");
 	} catch (error: any) {
 		throw new Error(`Failed to delete course: ${error.message}`);
+	}
+};
+
+export const enrollInCourse = async (
+	studentId: string,
+	courseId: string
+): Promise<ICourse> => {
+	try {
+		const course = await Course.findById(courseId);
+		if (!course) throw new Error("Course not found");
+
+		const user = await User.findById(studentId);
+		if (!user) throw new Error("Student not found");
+
+		// Prevent duplicate enrollment
+		if (user.enrolledCourses.some((id) => id.toString() === courseId)) {
+			throw new Error("Already enrolled in this course");
+		}
+
+		user.enrolledCourses.push(courseId);
+		await user.save();
+
+		return course.toObject();
+	} catch (error: any) {
+		throw new Error(`Enrollment failed: ${error.message}`);
 	}
 };

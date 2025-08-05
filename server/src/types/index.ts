@@ -8,6 +8,7 @@ export interface IUser {
 	role: UserRole;
 	status: UserStatus;
 	profile: IUserProfile;
+	enrolledCourses: string[];
 	createdAt: Date;
 	updatedAt: Date;
 }

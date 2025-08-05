@@ -36,6 +36,9 @@ const UserSchema = new Schema<IUserDocument>(
 			default: UserRole.STUDENT,
 			required: true,
 		},
+		enrolledCourses: [
+			{ type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+		],
 		status: {
 			type: String,
 			enum: Object.values(UserStatus),

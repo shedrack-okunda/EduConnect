@@ -56,10 +56,31 @@ const deleteCourse = async (courseId: string): Promise<void> => {
 	}
 };
 
+const enrollInCourse = async (courseId: string): Promise<void> => {
+	try {
+		await apiClient.post(`/courses/enroll/${courseId}`);
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to enroll in course");
+	}
+};
+
+const enrolledCourses = async (): Promise<ICourse[]> => {
+	try {
+		const response = await apiClient.get("/courses/enrolled");
+		return response.data.data ?? [];
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to fetch enrolled courses");
+	}
+};
+
 export const courseService = {
 	deleteCourse,
 	updateCourse,
 	getCourseById,
 	getCourses,
 	createCourse,
+	enrollInCourse,
+	enrolledCourses,
 };

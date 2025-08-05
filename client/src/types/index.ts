@@ -1,4 +1,5 @@
 import type {
+	ICourse,
 	IEducation,
 	IExperience,
 	ISocialLinks,
@@ -26,6 +27,7 @@ export interface IUser {
 	role: UserRole;
 	status: UserStatus;
 	profile: IUserProfile;
+	enrolledCourses: ICourse[] | string[];
 	createdAt: Date;
 	updatedAt: Date;
 }
