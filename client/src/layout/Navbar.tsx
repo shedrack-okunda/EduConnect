@@ -1,5 +1,5 @@
 // Navbar.tsx
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { BookOpen, Menu } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -64,11 +64,6 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar }) => {
 							alt="Profile"
 							className="w-8 h-8 rounded-lg object-cover"
 						/>
-						<Link to="/profile">
-							<span className="font-medium">
-								{user?.profile?.firstName || "Educator"}
-							</span>
-						</Link>
 					</div>
 
 					<button

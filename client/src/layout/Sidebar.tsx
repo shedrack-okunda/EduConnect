@@ -65,6 +65,24 @@ const Sidebar: React.FC<SidebarProps> = ({ onClose }) => {
 			icon: <User className="w-5 h-5" />,
 			roles: ["student", "educator", "admin"],
 		},
+		{
+			label: "Edit Profile",
+			path: "/profile/edit",
+			icon: <User className="w-5 h-5" />,
+			roles: ["student", "educator", "admin"],
+		},
+		{
+			label: "My Education",
+			path: "/profile#education",
+			icon: <GraduationCap className="w-5 h-5" />,
+			roles: ["student", "educator", "admin"],
+		},
+		{
+			label: "My Experience",
+			path: "/profile#experience",
+			icon: <BookOpen className="w-5 h-5" />,
+			roles: ["student", "educator", "admin"],
+		},
 	];
 
 	return (
