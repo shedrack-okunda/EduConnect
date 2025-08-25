@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Play, Star } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
 import { courseService } from "../services/course";
 import type { ICourse } from "../../../shared/types";
+import { useLocation } from "react-router-dom";
 
 const StudentDashboard: React.FC = () => {
-	const [view, setView] = useState<"all" | "enrolled">("all");
 	const [allCourses, setAllCourses] = useState<ICourse[]>([]);
 	const [enrolledCourses, setEnrolledCourses] = useState<ICourse[]>([]);
+	const [completedCourses, setCompletedCourses] = useState<ICourse[]>([]);
 	const [loading, setLoading] = useState(false);
-	const { state } = useAuth();
-	const { user } = state;
+
+	const location = useLocation();
+	const view = location.pathname.includes("enrolled")
+		? "enrolled"
+		: location.pathname.includes("completed")
+		? "completed"
+		: "all";
 
 	// Fetch all courses
 	useEffect(() => {
@@ -29,9 +34,9 @@ const StudentDashboard: React.FC = () => {
 		fetchCourses();
 	}, []);
 
-	// Fetch enrolled courses when "My Courses" view is active
+	// Fetch enrolled courses
 	useEffect(() => {
-		const fetchEnrolledCourses = async () => {
+		const fetchEnrolled = async () => {
 			if (view === "enrolled") {
 				setLoading(true);
 				try {
@@ -45,10 +50,29 @@ const StudentDashboard: React.FC = () => {
 				}
 			}
 		};
-
-		fetchEnrolledCourses();
+		fetchEnrolled();
 	}, [view]);
 
+	// Fetch completed courses
+	useEffect(() => {
+		const fetchCompleted = async () => {
+			if (view === "completed") {
+				setLoading(true);
+				try {
+					const data = await courseService.completedCourses();
+					setCompletedCourses(Array.isArray(data) ? data : []);
+				} catch (error) {
+					console.error(error);
+					setCompletedCourses([]);
+				} finally {
+					setLoading(false);
+				}
+			}
+		};
+		fetchCompleted();
+	}, [view]);
+
+	// Handlers
 	const handleEnroll = async (courseId: string) => {
 		try {
 			await courseService.enrollInCourse(courseId);
@@ -62,12 +86,25 @@ const StudentDashboard: React.FC = () => {
 		}
 	};
 
+	const handleUnenroll = async (courseId: string) => {
+		try {
+			await courseService.unenrollFromCourse(courseId);
+			const updated = await courseService.enrolledCourses();
+			setEnrolledCourses(Array.isArray(updated) ? updated : []);
+			alert("You have been unenrolled.");
+		} catch (error) {
+			alert(error || "Unenrollment failed");
+		}
+	};
+
+	// Renders courses with buttons depending on view
 	const renderCourses = (courses: ICourse[] = []) => (
 		<div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{courses.map((course) => (
 				<div
 					key={course._id}
 					className="group bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl overflow-hidden hover:scale-105 transition-all duration-300 cursor-pointer">
+					{/* Course preview */}
 					<div className="relative">
 						<img
 							src={
@@ -87,6 +124,7 @@ const StudentDashboard: React.FC = () => {
 						</div>
 					</div>
 
+					{/* Course content */}
 					<div className="p-4">
 						<h3 className="font-semibold mb-2 group-hover:text-purple-300 transition-colors">
 							{course.title}
@@ -106,23 +144,40 @@ const StudentDashboard: React.FC = () => {
 								</span>
 							</div>
 							<span className="text-sm text-gray-400">
-								0% complete
+								{course.progress ?? 0}% complete
 							</span>
 						</div>
 
 						<div className="w-full bg-gray-700 rounded-full h-2">
 							<div
 								className="bg-gradient-to-r from-purple-500 to-blue-500 h-2 rounded-full transition-all duration-300"
-								style={{ width: `0%` }}></div>
+								style={{
+									width: `${course.progress ?? 0}%`,
+								}}></div>
 						</div>
 					</div>
 
+					{/* Action buttons */}
 					{view === "all" && (
 						<button
 							onClick={() => handleEnroll(course._id)}
 							className="flex justify-center w-full bg-purple-500 text-white px-4 py-2 rounded mt-2 hover:bg-purple-600">
 							Enroll
 						</button>
+					)}
+
+					{view === "enrolled" && (
+						<button
+							onClick={() => handleUnenroll(course._id)}
+							className="flex justify-center w-full bg-red-500 text-white px-4 py-2 rounded mt-2 hover:bg-red-600">
+							Unenroll
+						</button>
+					)}
+
+					{view === "completed" && (
+						<span className="flex justify-center w-full bg-green-500 text-white px-4 py-2 rounded mt-2">
+							Completed
+						</span>
 					)}
 				</div>
 			))}
@@ -131,45 +186,24 @@ const StudentDashboard: React.FC = () => {
 
 	return (
 		<div className="flex min-h-screen bg-gray-900 text-white">
-			{/* Sidebar */}
-			<aside className="w-64 bg-gray-800 p-6">
-				<h2 className="text-xl font-bold mb-6">
-					Welcome, {user?.profile?.firstName}
-				</h2>
-				<nav className="space-y-4">
-					<button
-						className={`w-full text-left px-4 py-2 rounded ${
-							view === "all"
-								? "bg-purple-600 text-white"
-								: "hover:bg-gray-700"
-						}`}
-						onClick={() => setView("all")}>
-						All Courses
-					</button>
-					<button
-						className={`w-full text-left px-4 py-2 rounded ${
-							view === "enrolled"
-								? "bg-purple-600 text-white"
-								: "hover:bg-gray-700"
-						}`}
-						onClick={() => setView("enrolled")}>
-						My Courses
-					</button>
-				</nav>
-			</aside>
-
 			{/* Main Content */}
 			<main className="flex-1 p-8">
 				<h1 className="text-3xl font-bold mb-6">
-					{view === "all" ? "All Courses" : "My Enrolled Courses"}
+					{view === "all"
+						? "All Courses"
+						: view === "enrolled"
+						? "My Enrolled Courses"
+						: "Completed Courses"}
 				</h1>
 
 				{loading ? (
 					<p>Loading...</p>
 				) : view === "all" ? (
 					renderCourses(allCourses)
-				) : (
+				) : view === "enrolled" ? (
 					renderCourses(enrolledCourses)
+				) : (
+					renderCourses(completedCourses)
 				)}
 			</main>
 		</div>

@@ -87,3 +87,51 @@ export const enrollInCourse = async (
 		throw new Error(`Enrollment failed: ${error.message}`);
 	}
 };
+
+// Unenroll
+export const unenrollFromCourse = async (
+	studentId: string,
+	courseId: string
+) => {
+	const user = await User.findById(studentId);
+	if (!user) throw new Error("Student not found");
+
+	user.enrolledCourses = user.enrolledCourses.filter(
+		(c: any) => c.courseId.toString() !== courseId
+	);
+	await user.save();
+	return true;
+};
+
+// Update progress
+export const updateCourseProgress = async (
+	studentId: string,
+	courseId: string,
+	progress: number
+) => {
+	const user = await User.findById(studentId);
+	if (!user) throw new Error("Student not found");
+
+	const courseProgress: any = user.enrolledCourses.find(
+		(c: any) => c.courseId.toString() === courseId
+	);
+	if (!courseProgress) throw new Error("Not enrolled in this course");
+
+	courseProgress.progress = progress;
+	if (progress >= 100) {
+		courseProgress.status = "completed";
+	}
+
+	await user.save();
+	return courseProgress;
+};
+
+// Completed courses
+export const getCompletedCourses = async (studentId: string) => {
+	const user = await User.findById(studentId).populate(
+		"enrolledCourses.courseId"
+	);
+	if (!user) throw new Error("Student not found");
+
+	return user.enrolledCourses.filter((c: any) => c.status === "completed");
+};

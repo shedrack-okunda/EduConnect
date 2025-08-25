@@ -45,6 +45,16 @@ function App() {
 
 					<Route path="/student" element={<StudentDashboard />} />
 
+					<Route path="/student/all" element={<StudentDashboard />} />
+					<Route
+						path="/student/enrolled"
+						element={<StudentDashboard />}
+					/>
+					<Route
+						path="/student/completed"
+						element={<StudentDashboard />}
+					/>
+
 					<Route path="/educator" element={<EducatorDashboard />} />
 
 					<Route path="/profile" element={<ProfilePage />} />

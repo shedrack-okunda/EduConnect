@@ -75,6 +75,34 @@ const enrolledCourses = async (): Promise<ICourse[]> => {
 	}
 };
 
+const unenrollFromCourse = async (courseId: string): Promise<void> => {
+	try {
+		await apiClient.post(`/courses/unenroll/${courseId}`);
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to unenroll from course");
+	}
+};
+
+const updateCourseProgress = async (courseId: string, progress: number) => {
+	try {
+		await apiClient.put(`/courses/progress/${courseId}`, { progress });
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to update course progress");
+	}
+};
+
+const completedCourses = async (): Promise<ICourse[]> => {
+	try {
+		const response = await apiClient.get("/courses/completed");
+		return response.data.data ?? [];
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to fetch completed courses");
+	}
+};
+
 export const courseService = {
 	deleteCourse,
 	updateCourse,
@@ -83,4 +111,7 @@ export const courseService = {
 	createCourse,
 	enrollInCourse,
 	enrolledCourses,
+	unenrollFromCourse,
+	updateCourseProgress,
+	completedCourses,
 };

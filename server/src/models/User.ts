@@ -37,7 +37,15 @@ const UserSchema = new Schema<IUserDocument>(
 			required: true,
 		},
 		enrolledCourses: [
-			{ type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+			{
+				courseId: { type: Schema.Types.ObjectId, ref: "Course" },
+				progress: { type: Number, default: 0 },
+				status: {
+					type: String,
+					enum: ["enrolled", "completed"],
+					default: "enrolled",
+				},
+			},
 		],
 		status: {
 			type: String,

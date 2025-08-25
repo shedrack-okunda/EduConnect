@@ -141,6 +141,8 @@ export interface ICourse {
 	reviewCount: number;
 	tags: string[];
 	slug: string;
+	progress?: number;
+	enrollmentStatus?: "enrolled" | "completed";
 	createdAt: Date;
 	updatedAt: Date;
 }

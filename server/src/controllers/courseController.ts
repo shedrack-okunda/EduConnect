@@ -6,6 +6,9 @@ import {
 	updateCourse,
 	deleteCourse,
 	enrollInCourse,
+	updateCourseProgress,
+	getCompletedCourses,
+	unenrollFromCourse,
 } from "../services/course";
 import { ICourseDTO, IUser, UserRole } from "../types";
 import { Course } from "../models/Course";
@@ -156,6 +159,86 @@ export const getEnrolledCoursesController = async (
 			success: true,
 			message: "Enrolled courses retrieved successfully",
 			data: user.enrolledCourses,
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// POST /courses/unenroll/:courseId
+export const unenrollFromCourseController = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const { courseId } = req.params;
+		const studentId = req.user?._id;
+
+		if (!studentId) throw new Error("Student ID not found");
+
+		await unenrollFromCourse(studentId, courseId);
+
+		res.status(200).json({
+			success: true,
+			message: "Successfully unenrolled from course",
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// PUT /courses/progress/:courseId
+export const updateCourseProgressController = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const { courseId } = req.params;
+		const { progress } = req.body;
+		const studentId = req.user?._id;
+
+		if (!studentId) throw new Error("Student ID not found");
+
+		const updated = await updateCourseProgress(
+			studentId,
+			courseId,
+			progress
+		);
+
+		res.status(200).json({
+			success: true,
+			message: "Course progress updated",
+			data: updated,
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+// GET /courses/completed
+export const getCompletedCoursesController = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const studentId = req.user?._id;
+		if (!studentId) throw new Error("Student ID not found");
+
+		const completed = await getCompletedCourses(studentId);
+
+		res.status(200).json({
+			success: true,
+			message: "Completed courses retrieved successfully",
+			data: completed,
 		});
 	} catch (error: any) {
 		res.status(400).json({
