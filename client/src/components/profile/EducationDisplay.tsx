@@ -1,4 +1,5 @@
 import type { IEducation } from "../../../../shared/types";
+import DateRange from "./DateRange";
 
 interface EducationDisplayProps {
 	education: IEducation[];
@@ -7,26 +8,30 @@ interface EducationDisplayProps {
 export const EducationDisplay: React.FC<EducationDisplayProps> = ({
 	education,
 }) => {
-	if (!education.length)
-		return <p className="text-gray-500">No education records added yet.</p>;
+	if (!education.length) {
+		return (
+			<p className="text-gray-400 italic">No education records yet.</p>
+		);
+	}
 
 	return (
 		<div className="space-y-3">
 			{education.map((edu, index) => (
 				<div
 					key={index}
-					className="border rounded-md p-3 bg-purple-100 text-purple-900">
-					<p className="font-semibold">{edu.institution}</p>
-					<p className="text-sm">
-						{edu.degree}, {edu.fieldOfStudy}
+					className="p-4 bg-purple-600/10 border border-purple-500/20 rounded-lg shadow-sm">
+					<p className="font-semibold text-purple-200">
+						{edu.institution}
 					</p>
-					<p className="text-sm text-purple-700">
-						{new Date(edu.startDate).toLocaleDateString()} –{" "}
-						{edu.current
-							? "Present"
-							: edu.endDate
-							? new Date(edu.endDate).toLocaleDateString()
-							: "N/A"}
+					<p className="text-sm text-purple-300">
+						{edu.degree} – {edu.fieldOfStudy}
+					</p>
+					<p className="text-xs text-purple-400 mt-1">
+						<DateRange
+							startDate={edu.startDate}
+							endDate={edu.endDate}
+							current={edu.current}
+						/>
 					</p>
 				</div>
 			))}

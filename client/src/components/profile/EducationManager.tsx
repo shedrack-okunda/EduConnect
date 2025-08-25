@@ -1,228 +1,231 @@
-import { useState } from "react";
-import { useAuth } from "../../context/AuthContext";
-import { profileService } from "../../services/profile";
+import React, { useState } from "react";
+import FormWrapper from "./FormWrapper";
+import DisplayCard from "./DisplayCard";
+import DateRange from "./DateRange";
 import type { IEducation } from "../../../../shared/types";
-import { useNavigate } from "react-router-dom";
 
-interface EducationManagerProps {
-	education: IEducation[];
-	onEducationUpdate: (education: IEducation[]) => void;
+interface EducationWithStatus extends IEducation {
+	isOngoing?: boolean;
+	institution: string;
+	degree: string;
+	fieldOfStudy: string;
+	startDate: string;
+	endDate?: string;
 }
 
-export const EducationManager: React.FC<EducationManagerProps> = ({
+interface EducationManagerProps {
+	education: EducationWithStatus[];
+	onEducationUpdate?: (updated: EducationWithStatus[]) => void;
+}
+
+const EducationManager: React.FC<EducationManagerProps> = ({
 	education,
 	onEducationUpdate,
 }) => {
-	const [formData, setFormData] = useState<IEducation>({
-		institution: "",
-		degree: "",
-		fieldOfStudy: "",
-		startDate: "",
-		endDate: "",
-		current: false,
-	});
-	const [isLoading, setIsLoading] = useState(false);
-	const [editIndex, setEditIndex] = useState<number | null>(null);
+	const [isEditing, setIsEditing] = useState(false);
+	const [localEducation, setLocalEducation] =
+		useState<EducationWithStatus[]>(education);
 
-	const { updateUser, refreshUser } = useAuth();
-	const navigate = useNavigate();
-
-	const handleSave = async () => {
-		if (!formData.institution.trim()) return;
-
-		try {
-			setIsLoading(true);
-			let updatedEducation;
-
-			if (editIndex !== null) {
-				updatedEducation = [...education];
-				updatedEducation[editIndex] = formData;
-			} else {
-				updatedEducation = [...education, formData];
-			}
-
-			const updatedUser = await profileService.updateEducation(
-				updatedEducation
-			);
-			onEducationUpdate(updatedEducation);
-			await refreshUser();
-			updateUser(updatedUser);
-
-			// Reset form
-			setFormData({
-				institution: "",
-				degree: "",
-				fieldOfStudy: "",
-				startDate: "",
-				endDate: "",
-				current: false,
-			});
-			setEditIndex(null);
-			navigate("/profile");
-		} catch (error) {
-			console.error("Failed to save education:", error);
-		} finally {
-			setIsLoading(false);
-		}
+	const handleChange = (
+		idx: number,
+		field: keyof EducationWithStatus,
+		value: string | boolean
+	) => {
+		const updated = [...localEducation];
+		updated[idx] = { ...updated[idx], [field]: value };
+		setLocalEducation(updated);
 	};
 
-	const handleEdit = (index: number) => {
-		const item = education[index];
-		setFormData(item);
-		setEditIndex(index);
-		window.scrollTo({ top: 0, behavior: "smooth" });
+	const handleSave = () => {
+		setIsEditing(false);
+		if (onEducationUpdate) onEducationUpdate(localEducation);
 	};
 
-	const handleRemoveEducation = async (indexToRemove: number) => {
-		try {
-			setIsLoading(true);
-			const updatedEducation = education.filter(
-				(_, index) => index !== indexToRemove
-			);
-			const updatedUser = await profileService.updateEducation(
-				updatedEducation
-			);
-			onEducationUpdate(updatedEducation);
-			await refreshUser();
-			updateUser(updatedUser);
-			if (editIndex === indexToRemove) {
-				setFormData({
-					institution: "",
-					degree: "",
-					fieldOfStudy: "",
-					startDate: "",
-					endDate: "",
-					current: false,
-				});
-				setEditIndex(null);
-			}
-		} catch (error) {
-			console.error("Failed to remove education:", error);
-		} finally {
-			setIsLoading(false);
-		}
+	const handleDelete = (idx: number) => {
+		const updated = localEducation.filter((_, i) => i !== idx);
+		setLocalEducation(updated);
+		if (onEducationUpdate) onEducationUpdate(updated);
 	};
 
 	return (
-		<div className="mt-20 space-y-4 bg-purple-50 p-4 rounded-lg">
-			<label className="block text-lg font-bold text-gray-700">
-				{editIndex !== null ? "Edit Education" : "Add Education"}
-			</label>
-
-			{/* Inputs */}
-			<div className="flex flex-col md:flex-row gap-2">
-				<input
-					type="text"
-					placeholder="Institution"
-					value={formData.institution}
-					onChange={(e) =>
-						setFormData({
-							...formData,
-							institution: e.target.value,
-						})
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md flex-1"
-				/>
-				<input
-					type="text"
-					placeholder="Degree"
-					value={formData.degree}
-					onChange={(e) =>
-						setFormData({ ...formData, degree: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md flex-1"
-				/>
-			</div>
-
-			<div className="flex flex-col md:flex-row gap-2">
-				<input
-					type="text"
-					placeholder="Field of Study"
-					value={formData.fieldOfStudy}
-					onChange={(e) =>
-						setFormData({
-							...formData,
-							fieldOfStudy: e.target.value,
-						})
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md flex-1"
-				/>
-				<input
-					type="date"
-					value={formData.startDate}
-					onChange={(e) =>
-						setFormData({ ...formData, startDate: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md"
-				/>
-				<input
-					type="date"
-					value={formData.endDate}
-					onChange={(e) =>
-						setFormData({ ...formData, endDate: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md"
-					disabled={formData.current}
-				/>
-			</div>
-
-			<label className="inline-flex items-center mt-2">
-				<input
-					type="checkbox"
-					checked={formData.current}
-					onChange={(e) =>
-						setFormData({ ...formData, current: e.target.checked })
-					}
-					className="form-checkbox text-purple-600"
-				/>
-				<span className="ml-2 text-sm text-gray-700">
-					Currently Studying
-				</span>
-			</label>
-
-			<button
-				onClick={handleSave}
-				disabled={isLoading}
-				className="flex px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
-				{editIndex !== null ? "Update Education" : "Add Education"}
-			</button>
-
-			{/* List */}
-			<div className="space-y-2">
-				{education.map((edu, index) => (
-					<div
-						key={index}
-						className="flex items-center justify-between bg-white border p-2 rounded-md">
-						<div className="text-sm">
-							<strong>{edu.institution}</strong> – {edu.degree},{" "}
-							{edu.fieldOfStudy}
-							<br />
-							<small className="text-gray-600">
-								{new Date(edu.startDate).toLocaleDateString()} –{" "}
-								{edu.current
-									? "Present"
-									: edu.endDate
-									? new Date(edu.endDate).toLocaleDateString()
-									: "N/A"}
-							</small>
+		<FormWrapper
+			title="Education"
+			actions={
+				<button
+					onClick={() => setIsEditing(!isEditing)}
+					className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium shadow hover:bg-blue-700 transition">
+					{isEditing ? "Cancel" : "Edit"}
+				</button>
+			}>
+			{localEducation.length === 0 ? (
+				<p className="text-gray-500 dark:text-gray-400">
+					No education added yet.
+				</p>
+			) : isEditing ? (
+				<div className="space-y-6">
+					{localEducation.map((edu, idx) => (
+						<div
+							key={idx}
+							className="p-5 rounded-xl border bg-gray-50 dark:bg-gray-800 shadow-sm space-y-4">
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+										Institution
+									</label>
+									<input
+										type="text"
+										value={edu.institution}
+										onChange={(e) =>
+											handleChange(
+												idx,
+												"institution",
+												e.target.value
+											)
+										}
+										placeholder="Institution"
+										className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+										Degree
+									</label>
+									<input
+										type="text"
+										value={edu.degree}
+										onChange={(e) =>
+											handleChange(
+												idx,
+												"degree",
+												e.target.value
+											)
+										}
+										placeholder="Degree"
+										className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+									/>
+								</div>
+								<div className="md:col-span-2">
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+										Field of Study
+									</label>
+									<input
+										type="text"
+										value={edu.fieldOfStudy}
+										onChange={(e) =>
+											handleChange(
+												idx,
+												"fieldOfStudy",
+												e.target.value
+											)
+										}
+										placeholder="Field of Study"
+										className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+										Start Date
+									</label>
+									<input
+										type="date"
+										value={edu.startDate}
+										onChange={(e) =>
+											handleChange(
+												idx,
+												"startDate",
+												e.target.value
+											)
+										}
+										className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+										End Date
+									</label>
+									<input
+										type="date"
+										value={edu.endDate || ""}
+										disabled={edu.isOngoing}
+										onChange={(e) =>
+											handleChange(
+												idx,
+												"endDate",
+												e.target.value
+											)
+										}
+										className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+									/>
+									<div className="mt-2 flex items-center gap-2">
+										<input
+											type="checkbox"
+											checked={edu.isOngoing ?? false}
+											onChange={(e) =>
+												handleChange(
+													idx,
+													"isOngoing",
+													e.target.checked
+												)
+											}
+											className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+										/>
+										<span className="text-sm text-gray-600 dark:text-gray-300">
+											Ongoing
+										</span>
+									</div>
+								</div>
+							</div>
 						</div>
+					))}
 
-						<div className="flex gap-2 items-center">
-							<button
-								onClick={() => handleEdit(index)}
-								className="text-blue-600 border rounded p-2 hover:text-blue-800 text-sm font-medium cursor-pointer">
-								Edit
-							</button>
-							<button
-								onClick={() => handleRemoveEducation(index)}
-								disabled={isLoading}
-								className="text-red-600 hover:text-red-800 text-xl font-bold">
-								×
-							</button>
-						</div>
+					<div className="flex justify-end gap-3">
+						<button
+							onClick={handleSave}
+							className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition">
+							Save
+						</button>
+						<button
+							onClick={() => setIsEditing(false)}
+							className="px-4 py-2 bg-gray-500 text-white rounded-lg shadow hover:bg-gray-600 transition">
+							Cancel
+						</button>
 					</div>
-				))}
-			</div>
-		</div>
+				</div>
+			) : (
+				localEducation.map((edu, idx) => (
+					<DisplayCard
+						key={idx}
+						title={edu.institution}
+						subtitle={edu.degree}
+						footer={
+							<DateRange
+								startDate={edu.startDate}
+								endDate={edu.endDate}
+								isOngoing={edu.isOngoing ?? !edu.endDate}
+							/>
+						}
+						actions={
+							<div className="flex gap-2">
+								<button
+									onClick={() => setIsEditing(true)}
+									className="px-3 py-1 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+									Edit
+								</button>
+								<button
+									onClick={() => handleDelete(idx)}
+									className="px-3 py-1 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 transition">
+									Delete
+								</button>
+							</div>
+						}>
+						<p className="text-gray-600 dark:text-gray-300 text-sm">
+							{edu.fieldOfStudy}
+						</p>
+					</DisplayCard>
+				))
+			)}
+		</FormWrapper>
 	);
 };
+
+export default EducationManager;

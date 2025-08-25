@@ -23,7 +23,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 	) => {
 		const { name, value } = e.target;
 
-		// Handle array fields as comma-separated strings
 		if (name === "skills" || name === "interests") {
 			setFormData((prev) => ({
 				...prev,
@@ -39,13 +38,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		const updatedProfile = {
-			...formData,
-			skills: formData.skills,
-			interests: formData.interests,
-		};
-
-		onSave(updatedProfile);
+		onSave(formData);
 
 		const refreshedUser = await refreshUser();
 		updateUser(refreshedUser);
@@ -54,10 +47,14 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 	return (
 		<form
 			onSubmit={handleSubmit}
-			className="space-y-4 bg-white p-6 rounded shadow">
+			className="space-y-6 bg-gray-900/60 border border-gray-700 p-6 rounded-xl shadow text-white">
+			{/* Basic Info */}
+			<h2 className="text-lg font-semibold text-purple-300">
+				Basic Info
+			</h2>
 			<div className="grid grid-cols-2 gap-4">
 				<div>
-					<label className="block text-sm font-medium">
+					<label className="block text-sm text-gray-400">
 						First Name
 					</label>
 					<input
@@ -65,11 +62,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 						name="firstName"
 						value={formData.firstName}
 						onChange={handleChange}
-						className="w-full border p-2 rounded"
+						className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500"
 					/>
 				</div>
 				<div>
-					<label className="block text-sm font-medium">
+					<label className="block text-sm text-gray-400">
 						Last Name
 					</label>
 					<input
@@ -77,70 +74,69 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ profile, onSave }) => {
 						name="lastName"
 						value={formData.lastName}
 						onChange={handleChange}
-						className="w-full border p-2 rounded"
+						className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500"
 					/>
 				</div>
 			</div>
 
+			{/* Avatar */}
 			<div>
-				<label className="block text-sm font-medium">Avatar URL</label>
+				<label className="block text-sm text-gray-400">
+					Avatar URL
+				</label>
 				<input
 					type="text"
 					name="avatar"
 					value={formData.avatar}
 					onChange={handleChange}
-					className="w-full border p-2 rounded"
+					className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500"
 				/>
 			</div>
 
+			{/* Bio */}
 			<div>
-				<label className="block text-sm font-medium">Bio</label>
+				<label className="block text-sm text-gray-400">Bio</label>
 				<textarea
 					name="bio"
 					value={formData.bio}
 					onChange={handleChange}
-					className="w-full border p-2 rounded"
 					rows={3}
+					className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-500"
 				/>
 			</div>
 
-			{/* <div>
-				<label className="block text-sm font-medium">
+			{/* Skills */}
+			<div>
+				<label className="block text-sm text-gray-400">
 					Skills (comma-separated)
 				</label>
 				<input
 					type="text"
 					name="skills"
-					value={
-						Array.isArray(formData.skills)
-							? formData.skills.join(", ")
-							: ""
-					}
+					value={formData.skills.join(", ")}
 					onChange={handleChange}
-					className="w-full border p-2 rounded"
+					className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
 				/>
-			</div> */}
+			</div>
 
-			{/* <div>
-				<label className="block text-sm font-medium">
+			{/* Interests */}
+			<div>
+				<label className="block text-sm text-gray-400">
 					Interests (comma-separated)
 				</label>
 				<input
 					type="text"
 					name="interests"
-					value={
-						Array.isArray(formData.interests)
-							? formData.interests.join(", ")
-							: ""
-					}
+					value={formData.interests.join(", ")}
 					onChange={handleChange}
-					className="w-full border p-2 rounded"
+					className="w-full p-2 rounded bg-gray-800 border border-gray-700 text-white placeholder-gray-400 focus:ring-2 focus:ring-green-500"
 				/>
-			</div> */}
+			</div>
 
+			{/* Save */}
 			<button
 				type="submit"
-				className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+				className="px-4 py-2 rounded bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition">
 				Save Profile
 			</button>
 		</form>

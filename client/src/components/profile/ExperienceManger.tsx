@@ -3,6 +3,9 @@ import { useAuth } from "../../context/AuthContext";
 import { profileService } from "../../services/profile";
 import { useNavigate } from "react-router-dom";
 import type { IExperience } from "../../../../shared/types";
+import FormWrapper from "./FormWrapper";
+import DisplayCard from "./DisplayCard";
+import DateRange from "./DateRange";
 
 interface ExperienceManagerProps {
 	experience: IExperience[];
@@ -27,6 +30,18 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 	const { updateUser, refreshUser } = useAuth();
 	const navigate = useNavigate();
 
+	const resetForm = () => {
+		setFormData({
+			company: "",
+			position: "",
+			description: "",
+			startDate: "",
+			endDate: "",
+			current: false,
+		});
+		setEditIndex(null);
+	};
+
 	const handleSave = async () => {
 		if (!formData.company.trim() || !formData.position.trim()) return;
 
@@ -48,16 +63,7 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 			await refreshUser();
 			updateUser(updatedUser);
 
-			// Reset form
-			setFormData({
-				company: "",
-				position: "",
-				description: "",
-				startDate: "",
-				endDate: "",
-				current: false,
-			});
-			setEditIndex(null);
+			resetForm();
 			navigate("/profile");
 		} catch (error) {
 			console.error("Failed to save experience:", error);
@@ -67,8 +73,7 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 	};
 
 	const handleEdit = (index: number) => {
-		const item = experience[index];
-		setFormData(item);
+		setFormData(experience[index]);
 		setEditIndex(index);
 		window.scrollTo({ top: 0, behavior: "smooth" });
 	};
@@ -77,7 +82,7 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 		try {
 			setIsLoading(true);
 			const updatedExperience = experience.filter(
-				(_, index) => index !== indexToRemove
+				(_, i) => i !== indexToRemove
 			);
 			const updatedUser = await profileService.updateExperience(
 				updatedExperience
@@ -86,17 +91,7 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 			await refreshUser();
 			updateUser(updatedUser);
 
-			if (editIndex === indexToRemove) {
-				setFormData({
-					company: "",
-					position: "",
-					description: "",
-					startDate: "",
-					endDate: "",
-					current: false,
-				});
-				setEditIndex(null);
-			}
+			if (editIndex === indexToRemove) resetForm();
 		} catch (error) {
 			console.error("Failed to remove experience:", error);
 		} finally {
@@ -105,121 +100,177 @@ export const ExperienceManager: React.FC<ExperienceManagerProps> = ({
 	};
 
 	return (
-		<div className="mt-20 space-y-4 bg-yellow-50 p-4 rounded-lg">
-			<label className="block text-lg font-bold text-gray-700">
-				{editIndex !== null ? "Edit Experience" : "Add Experience"}
-			</label>
+		<FormWrapper
+			title="Experience"
+			actions={
+				editIndex !== null && (
+					<button
+						onClick={resetForm}
+						className="px-3 py-1 rounded-lg bg-gray-500 text-white text-sm shadow hover:bg-gray-600 transition">
+						Cancel
+					</button>
+				)
+			}>
+			{/* Form */}
+			<div className="p-5 rounded-xl border bg-gray-50 dark:bg-gray-800 shadow-sm space-y-4 mb-6">
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							Company
+						</label>
+						<input
+							type="text"
+							placeholder="Company"
+							value={formData.company}
+							onChange={(e) =>
+								setFormData({
+									...formData,
+									company: e.target.value,
+								})
+							}
+							className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+						/>
+					</div>
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							Position
+						</label>
+						<input
+							type="text"
+							placeholder="Position"
+							value={formData.position}
+							onChange={(e) =>
+								setFormData({
+									...formData,
+									position: e.target.value,
+								})
+							}
+							className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+						/>
+					</div>
+					<div className="md:col-span-2">
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							Description
+						</label>
+						<textarea
+							placeholder="Description"
+							value={formData.description}
+							onChange={(e) =>
+								setFormData({
+									...formData,
+									description: e.target.value,
+								})
+							}
+							className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+							rows={3}
+						/>
+					</div>
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							Start Date
+						</label>
+						<input
+							type="date"
+							value={formData.startDate}
+							onChange={(e) =>
+								setFormData({
+									...formData,
+									startDate: e.target.value,
+								})
+							}
+							className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+						/>
+					</div>
+					<div>
+						<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+							End Date
+						</label>
+						<input
+							type="date"
+							value={formData.endDate}
+							disabled={formData.current}
+							onChange={(e) =>
+								setFormData({
+									...formData,
+									endDate: e.target.value,
+								})
+							}
+							className="w-full p-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 disabled:opacity-50 dark:bg-gray-700 dark:text-white dark:border-gray-600"
+						/>
+						<div className="mt-2 flex items-center gap-2">
+							<input
+								type="checkbox"
+								checked={formData.current}
+								onChange={(e) =>
+									setFormData({
+										...formData,
+										current: e.target.checked,
+									})
+								}
+								className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+							/>
+							<span className="text-sm text-gray-600 dark:text-gray-300">
+								Currently Working
+							</span>
+						</div>
+					</div>
+				</div>
 
-			<div className="flex flex-col md:flex-row gap-2">
-				<input
-					type="text"
-					placeholder="Company"
-					value={formData.company}
-					onChange={(e) =>
-						setFormData({ ...formData, company: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md flex-1"
-				/>
-				<input
-					type="text"
-					placeholder="Position"
-					value={formData.position}
-					onChange={(e) =>
-						setFormData({ ...formData, position: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md flex-1"
-				/>
+				<div className="flex justify-end">
+					<button
+						onClick={handleSave}
+						disabled={isLoading}
+						className="px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 disabled:opacity-50 transition">
+						{editIndex !== null
+							? "Update Experience"
+							: "Add Experience"}
+					</button>
+				</div>
 			</div>
 
-			<textarea
-				placeholder="Description"
-				value={formData.description}
-				onChange={(e) =>
-					setFormData({ ...formData, description: e.target.value })
-				}
-				className="w-full px-3 py-2 border border-gray-300 rounded-md"
-				rows={3}
-			/>
-
-			<div className="flex flex-col md:flex-row gap-2">
-				<input
-					type="date"
-					value={formData.startDate}
-					onChange={(e) =>
-						setFormData({ ...formData, startDate: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md"
-				/>
-				<input
-					type="date"
-					value={formData.endDate}
-					onChange={(e) =>
-						setFormData({ ...formData, endDate: e.target.value })
-					}
-					className="px-3 py-2 border border-gray-300 rounded-md"
-					disabled={formData.current}
-				/>
-			</div>
-
-			<label className="inline-flex items-center mt-2">
-				<input
-					type="checkbox"
-					checked={formData.current}
-					onChange={(e) =>
-						setFormData({ ...formData, current: e.target.checked })
-					}
-					className="form-checkbox text-yellow-600"
-				/>
-				<span className="ml-2 text-sm text-gray-700">
-					Currently Working
-				</span>
-			</label>
-
-			<button
-				onClick={handleSave}
-				disabled={isLoading}
-				className="flex px-4 py-2 bg-violet-600 text-white rounded-md hover:bg-yellow-700 disabled:opacity-50">
-				{editIndex !== null ? "Update Experience" : "Add Experience"}
-			</button>
-
-			{/* List */}
-			<div className="space-y-2">
-				{experience.map((exp, index) => (
-					<div
-						key={index}
-						className="flex items-center justify-between bg-white border p-2 rounded-md">
-						<div className="text-sm">
-							<strong>{exp.company}</strong> – {exp.position}
+			{/* Experience List */}
+			{experience.length === 0 ? (
+				<p className="text-gray-500 dark:text-gray-400">
+					No experience records added yet.
+				</p>
+			) : (
+				<div className="space-y-4">
+					{experience.map((exp, idx) => (
+						<DisplayCard
+							key={idx}
+							title={exp.company}
+							subtitle={exp.position}
+							footer={
+								<DateRange
+									startDate={exp.startDate}
+									endDate={exp.endDate}
+									isOngoing={exp.current}
+								/>
+							}
+							actions={
+								<div className="flex gap-2">
+									<button
+										onClick={() => handleEdit(idx)}
+										className="px-3 py-1 text-sm rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+										Edit
+									</button>
+									<button
+										onClick={() => handleRemove(idx)}
+										disabled={isLoading}
+										className="px-3 py-1 text-sm rounded-lg bg-red-600 text-white hover:bg-red-700 disabled:opacity-50 transition">
+										Delete
+									</button>
+								</div>
+							}>
 							{exp.description && (
-								<p className="text-xs text-gray-600 mt-1">
+								<p className="text-gray-600 dark:text-gray-300 text-sm">
 									{exp.description}
 								</p>
 							)}
-							<small className="text-gray-600 block mt-1">
-								{new Date(exp.startDate).toLocaleDateString()} –{" "}
-								{exp.current
-									? "Present"
-									: exp.endDate
-									? new Date(exp.endDate).toLocaleDateString()
-									: "N/A"}
-							</small>
-						</div>
-						<div className="flex gap-2 items-center">
-							<button
-								onClick={() => handleEdit(index)}
-								className="text-blue-600 border p-2 hover:text-blue-800 text-sm font-medium cursor-pointer">
-								Edit
-							</button>
-							<button
-								onClick={() => handleRemove(index)}
-								disabled={isLoading}
-								className="text-red-600 hover:text-red-800 text-xl font-bold">
-								×
-							</button>
-						</div>
-					</div>
-				))}
-			</div>
-		</div>
+						</DisplayCard>
+					))}
+				</div>
+			)}
+		</FormWrapper>
 	);
 };

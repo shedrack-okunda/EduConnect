@@ -19,63 +19,51 @@ export const SkillsManager: React.FC<SkillsManagerProps> = ({
 
 	const handleAddSkill = async () => {
 		if (!newSkill.trim()) return;
-
 		try {
 			setIsLoading(true);
-			const updatedSkills = [...skills, newSkill.trim()];
-			const updatedUser = await profileService.updateSkills(
-				updatedSkills
-			);
-			onSkillsUpdate(updatedSkills);
+			const updated = [...skills, newSkill.trim()];
+			const updatedUser = await profileService.updateSkills(updated);
+			onSkillsUpdate(updated);
 			updateUser(updatedUser);
 			setNewSkill("");
 			navigate("/profile");
-		} catch (error) {
-			console.error("Failed to add skill:", error);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const handleRemoveSkill = async (skillToRemove: string) => {
+	const handleRemoveSkill = async (toRemove: string) => {
 		try {
 			setIsLoading(true);
-			const updatedSkills = skills.filter(
-				(skill) => skill !== skillToRemove
-			);
-			const updatedUser = await profileService.updateSkills(
-				updatedSkills
-			);
-			onSkillsUpdate(updatedSkills);
+			const updated = skills.filter((s) => s !== toRemove);
+			const updatedUser = await profileService.updateSkills(updated);
+			onSkillsUpdate(updated);
 			updateUser(updatedUser);
-		} catch (error) {
-			console.error("Failed to remove skill:", error);
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	return (
-		<div className="mt-20 p-2 space-y-4">
-			<div>
-				<label className="block text-lg font-bold text-gray-700">
-					Skills
-				</label>
-				<div className="mt-2 flex flex-wrap gap-2">
-					{skills.map((skill, index) => (
-						<span
-							key={index}
-							className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-							{skill}
-							<button
-								onClick={() => handleRemoveSkill(skill)}
-								className="ml-2 text-blue-600 hover:text-blue-800"
-								disabled={isLoading}>
-								×
-							</button>
-						</span>
-					))}
-				</div>
+		<div className="mt-6 p-2 space-y-4">
+			<label className="block text-lg font-bold text-purple-200">
+				Skills
+			</label>
+
+			<div className="flex flex-wrap gap-2">
+				{skills.map((skill, index) => (
+					<span
+						key={index}
+						className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-600/20 text-purple-200 border border-purple-500/30">
+						{skill}
+						<button
+							onClick={() => handleRemoveSkill(skill)}
+							className="ml-2 text-purple-400 hover:text-purple-200"
+							disabled={isLoading}>
+							×
+						</button>
+					</span>
+				))}
 			</div>
 
 			<div className="flex gap-2">
@@ -84,13 +72,13 @@ export const SkillsManager: React.FC<SkillsManagerProps> = ({
 					value={newSkill}
 					onChange={(e) => setNewSkill(e.target.value)}
 					placeholder="Add a skill"
-					className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-					onKeyPress={(e) => e.key === "Enter" && handleAddSkill()}
+					className="flex-1 px-3 py-2 border border-purple-500/40 rounded-md bg-purple-900/20 text-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+					onKeyDown={(e) => e.key === "Enter" && handleAddSkill()}
 				/>
 				<button
 					onClick={handleAddSkill}
 					disabled={!newSkill.trim() || isLoading}
-					className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50">
+					className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
 					Add
 				</button>
 			</div>

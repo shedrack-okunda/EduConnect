@@ -7,7 +7,6 @@ import UnauthorizedPage from "./pages/UnauthorizedPage";
 import { UserRole } from "./types";
 import ProfilePage from "./layout/ProfilePage";
 import EditProfilePage from "./pages/EditProfilePage";
-import { EducationManager } from "./components/profile/EducationManager";
 import { useAuth } from "./context/AuthContext";
 import { SkillsManager } from "./components/profile/SkillsManger";
 import { InterestsManager } from "./components/profile/InterestManager";
@@ -16,10 +15,13 @@ import EduConnectLanding from "./pages/HomePage";
 import StudentDashboard from "./layout/StudentDashboard";
 import EducatorDashboard from "./layout/EducatorDashboard";
 import Layout from "./layout/Layout";
+import EducationManager from "./components/profile/EducationManager";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
 	const { state } = useAuth();
 	const { user } = state;
+
 	return (
 		<Router>
 			<Routes>
@@ -29,7 +31,7 @@ function App() {
 				<Route path="/login" element={<LoginForm />} />
 				<Route path="/unauthorized" element={<UnauthorizedPage />} />
 
-				{/* protected routes  */}
+				{/* protected routes */}
 				<Route
 					element={
 						<ProtectedRoute
@@ -44,7 +46,6 @@ function App() {
 					<Route path="/dashboard" element={<Dashboard />} />
 
 					<Route path="/student" element={<StudentDashboard />} />
-
 					<Route path="/student/all" element={<StudentDashboard />} />
 					<Route
 						path="/student/enrolled"
@@ -56,9 +57,7 @@ function App() {
 					/>
 
 					<Route path="/educator" element={<EducatorDashboard />} />
-
 					<Route path="/profile" element={<ProfilePage />} />
-
 					<Route path="/profile/edit" element={<EditProfilePage />} />
 
 					<Route
@@ -101,6 +100,9 @@ function App() {
 						}
 					/>
 				</Route>
+
+				{/* catch-all for unknown routes */}
+				<Route path="*" element={<NotFoundPage />} />
 			</Routes>
 		</Router>
 	);

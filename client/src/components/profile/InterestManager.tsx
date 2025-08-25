@@ -14,46 +14,51 @@ export const InterestsManager: React.FC<{
 
 	const handleAddInterest = async () => {
 		if (!newInterest.trim()) return;
-		const updated = [...interests, newInterest.trim()];
-		setIsLoading(true);
-		const updatedUser = await profileService.updateInterests(updated);
-		onInterestsUpdate(updated);
-		updateUser(updatedUser);
-		setNewInterest("");
-		setIsLoading(false);
-		navigate("/profile");
+		try {
+			setIsLoading(true);
+			const updated = [...interests, newInterest.trim()];
+			const updatedUser = await profileService.updateInterests(updated);
+			onInterestsUpdate(updated);
+			updateUser(updatedUser);
+			setNewInterest("");
+			navigate("/profile");
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	const handleRemoveInterest = async (toRemove: string) => {
-		const updated = interests.filter((i) => i !== toRemove);
-		setIsLoading(true);
-		const updatedUser = await profileService.updateInterests(updated);
-		onInterestsUpdate(updated);
-		updateUser(updatedUser);
-		setIsLoading(false);
+		try {
+			setIsLoading(true);
+			const updated = interests.filter((i) => i !== toRemove);
+			const updatedUser = await profileService.updateInterests(updated);
+			onInterestsUpdate(updated);
+			updateUser(updatedUser);
+		} finally {
+			setIsLoading(false);
+		}
 	};
 
 	return (
-		<div className="mt-20 p-2 space-y-4">
-			<div>
-				<label className="block text-lg font-bold text-gray-700">
-					Interests
-				</label>
-				<div className="mt-2 flex flex-wrap gap-2">
-					{interests.map((interest, index) => (
-						<span
-							key={index}
-							className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-green-800">
-							{interest}
-							<button
-								onClick={() => handleRemoveInterest(interest)}
-								className="ml-2 text-green-600 hover:text-green-800"
-								disabled={isLoading}>
-								×
-							</button>
-						</span>
-					))}
-				</div>
+		<div className="mt-6 p-2 space-y-4">
+			<label className="block text-lg font-bold text-purple-200">
+				Interests
+			</label>
+
+			<div className="flex flex-wrap gap-2">
+				{interests.map((interest, index) => (
+					<span
+						key={index}
+						className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-purple-600/20 text-purple-200 border border-purple-500/30">
+						{interest}
+						<button
+							onClick={() => handleRemoveInterest(interest)}
+							className="ml-2 text-purple-400 hover:text-purple-200"
+							disabled={isLoading}>
+							×
+						</button>
+					</span>
+				))}
 			</div>
 
 			<div className="flex gap-2">
@@ -61,14 +66,14 @@ export const InterestsManager: React.FC<{
 					type="text"
 					value={newInterest}
 					onChange={(e) => setNewInterest(e.target.value)}
-					placeholder="Add a skill"
-					className="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-					onKeyPress={(e) => e.key === "Enter" && handleAddInterest()}
+					placeholder="Add an interest"
+					className="flex-1 px-3 py-2 border border-purple-500/40 rounded-md bg-purple-900/20 text-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+					onKeyDown={(e) => e.key === "Enter" && handleAddInterest()}
 				/>
 				<button
 					onClick={handleAddInterest}
 					disabled={!newInterest.trim() || isLoading}
-					className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
+					className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50">
 					Add
 				</button>
 			</div>
