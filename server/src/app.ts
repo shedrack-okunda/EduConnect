@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -36,10 +36,10 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/modules", courseModuleRoutes);
 app.use("/api/lessons", lessonsRoutes);
-app.use("/", (req, res) => {
+app.use("/", (req: Request, res: Response) => {
 	res.send("Wow EduConnect is running!");
 });
 
 app.listen(port, () => {
-	console.log("Server running on port 5000");
+	console.log(`Server running on port ${port}`);
 });
