@@ -2,7 +2,7 @@ import { Course, ICourseDocument } from "../models/Course";
 import { User } from "../models/User";
 import type { ICourse, ICourseDTO } from "../types";
 
-// Create a course
+// ✅ Create a course
 export const createCourse = async (
 	courseData: ICourseDTO,
 	educatorId: string
@@ -16,10 +16,10 @@ export const createCourse = async (
 	}
 };
 
-// Get a single course
+// ✅ Get a single course
 export const getCourseById = async (courseId: string): Promise<ICourse> => {
 	try {
-		const course = await Course.findById(courseId).populate("educator");
+		const course = await Course.findById(courseId).populate("instructorId");
 		if (!course) throw new Error("Course not found");
 		return course;
 	} catch (error: any) {
@@ -27,7 +27,7 @@ export const getCourseById = async (courseId: string): Promise<ICourse> => {
 	}
 };
 
-// Get all courses (optionally by educator)
+// ✅ Get all courses (optionally by educator)
 export const getCourses = async (educatorId?: string): Promise<ICourse[]> => {
 	try {
 		const filter = educatorId ? { instructorId: educatorId } : {};
@@ -37,7 +37,7 @@ export const getCourses = async (educatorId?: string): Promise<ICourse[]> => {
 	}
 };
 
-// Update course
+// ✅ Update course
 export const updateCourse = async (
 	courseId: string,
 	updates: Partial<ICourse>
@@ -53,7 +53,7 @@ export const updateCourse = async (
 	}
 };
 
-// Delete course
+// ✅ Delete course
 export const deleteCourse = async (courseId: string): Promise<void> => {
 	try {
 		const deleted = await Course.findByIdAndDelete(courseId);
@@ -63,6 +63,7 @@ export const deleteCourse = async (courseId: string): Promise<void> => {
 	}
 };
 
+// ✅ Enroll in course
 export const enrollInCourse = async (
 	studentId: string,
 	courseId: string
@@ -75,12 +76,21 @@ export const enrollInCourse = async (
 		if (!user) throw new Error("Student not found");
 
 		// Prevent duplicate enrollment
-		if (user.enrolledCourses.some((id) => id.toString() === courseId)) {
-			throw new Error("Already enrolled in this course");
-		}
+		const alreadyEnrolled = user.enrolledCourses.some(
+			(c: any) => c.courseId.toString() === courseId
+		);
+		if (alreadyEnrolled) throw new Error("Already enrolled in this course");
 
-		user.enrolledCourses.push(courseId);
+		user.enrolledCourses.push({
+			courseId,
+			progress: 0,
+			status: "enrolled",
+		});
+
+		course.enrollmentCount = (course.enrollmentCount || 0) + 1;
+
 		await user.save();
+		await course.save();
 
 		return course.toObject();
 	} catch (error: any) {
@@ -88,22 +98,30 @@ export const enrollInCourse = async (
 	}
 };
 
-// Unenroll
+// ✅ Unenroll
 export const unenrollFromCourse = async (
 	studentId: string,
 	courseId: string
 ) => {
 	const user = await User.findById(studentId);
-	if (!user) throw new Error("Student not found");
+	const course = await Course.findById(courseId);
+
+	if (!user || !course) throw new Error("Student or course not found");
 
 	user.enrolledCourses = user.enrolledCourses.filter(
 		(c: any) => c.courseId.toString() !== courseId
 	);
+
+	if (course.enrollmentCount > 0) {
+		course.enrollmentCount -= 1;
+	}
+
 	await user.save();
+	await course.save();
 	return true;
 };
 
-// Update progress
+// ✅ Update progress
 export const updateCourseProgress = async (
 	studentId: string,
 	courseId: string,
@@ -112,21 +130,23 @@ export const updateCourseProgress = async (
 	const user = await User.findById(studentId);
 	if (!user) throw new Error("Student not found");
 
-	const courseProgress: any = user.enrolledCourses.find(
+	const enrollment: any = user.enrolledCourses.find(
 		(c: any) => c.courseId.toString() === courseId
 	);
-	if (!courseProgress) throw new Error("Not enrolled in this course");
+	if (!enrollment) throw new Error("Not enrolled in this course");
 
-	courseProgress.progress = progress;
+	enrollment.progress = progress;
 	if (progress >= 100) {
-		courseProgress.status = "completed";
+		enrollment.status = "completed";
+	} else if (progress > 0) {
+		enrollment.status = "in-progress";
 	}
 
 	await user.save();
-	return courseProgress;
+	return enrollment;
 };
 
-// Completed courses
+// ✅ Completed courses for student
 export const getCompletedCourses = async (studentId: string) => {
 	const user = await User.findById(studentId).populate(
 		"enrolledCourses.courseId"
@@ -134,4 +154,23 @@ export const getCompletedCourses = async (studentId: string) => {
 	if (!user) throw new Error("Student not found");
 
 	return user.enrolledCourses.filter((c: any) => c.status === "completed");
+};
+
+// ✅ Get all students + progress for a course (educator dashboard)
+export const getCourseEnrollments = async (courseId: string) => {
+	const users = await User.find({
+		"enrolledCourses.courseId": courseId,
+	}).select("profile enrolledCourses");
+
+	return users.map((user: any) => {
+		const enrollment = user.enrolledCourses.find(
+			(c: any) => c.courseId.toString() === courseId
+		);
+		return {
+			studentId: user._id,
+			name: `${user.profile.firstName} ${user.profile.lastName}`,
+			progress: enrollment?.progress || 0,
+			status: enrollment?.status || "enrolled",
+		};
+	});
 };

@@ -102,6 +102,14 @@ export interface IAuthResponse {
 	refreshToken: string;
 }
 
+export interface IEnrollment {
+	studentId: string;
+	name: string;
+	email: string;
+	progress: number;
+	status: "enrolled" | "in-progress" | "completed";
+}
+
 // Course interface
 export interface ICourse {
 	_id: string;

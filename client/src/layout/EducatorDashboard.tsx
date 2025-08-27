@@ -4,9 +4,11 @@ import { CourseDashboard } from "../components/course/CourseDashboard";
 // import { LessonDashboard } from "../components/lesson/LessonDashboard";
 import { courseService } from "../services/course";
 import { ModuleDashboard } from "../components/module/ModuleDashboard";
+import EducatorCourseEnrollments from "../components/course/EducatorCourseEnrollments";
 
 const EducatorDashboard: React.FC = () => {
 	const [isVisible, setIsVisible] = useState(false);
+	console.log(isVisible);
 	const [courseId, setCourseId] = useState<string>("");
 	const [moduleId, setModuleId] = useState<string>("");
 	console.log(moduleId);
@@ -35,55 +37,21 @@ const EducatorDashboard: React.FC = () => {
 	}, [user?._id]);
 
 	return (
-		<>
-			{/* Animated Background */}
-			<div className="absolute inset-0 overflow-hidden z-0">
-				<div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse"></div>
-				<div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-pulse animation-delay-2000"></div>
-			</div>
+		<div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+			<CourseDashboard />
 
-			<div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
-				<div className=" grid lg:grid-cols-4 gap-8">
-					<h1 className="text-2xl font-bold text-gray-300">
-						Welcome, {user?.profile?.firstName}
-					</h1>
-					{/* Main Content */}
-					<div className="lg:col-span-3 space-y-8">
-						{/* Stats Cards */}
-						<div
-							className={`grid md:grid-cols-4 gap-6 transition-all duration-1000 delay-500 ${
-								isVisible
-									? "translate-y-0 opacity-100"
-									: "translate-y-10 opacity-0"
-							}`}></div>
+			{courseId && (
+				<>
+					<ModuleDashboard
+						courseId={courseId}
+						onModuleSelect={(id) => setModuleId(id)}
+					/>
 
-						{/* My Courses Section */}
-						<div
-							className={`transition-all duration-1000 delay-700 ${
-								isVisible
-									? "translate-y-0 opacity-100"
-									: "translate-y-10 opacity-0"
-							}`}>
-							<div className="flex items-center justify-between mb-6">
-								<h2 className="text-2xl font-bold">
-									My Courses
-								</h2>
-							</div>
-							<CourseDashboard />
-
-							{courseId && (
-								<ModuleDashboard
-									courseId={courseId}
-									onModuleSelect={(id) => setModuleId(id)}
-								/>
-							)}
-
-							{/* <LessonDashboard moduleId={moduleId} /> */}
-						</div>
-					</div>
-				</div>
-			</div>
-		</>
+					{/* Show enrollments table for this course */}
+					<EducatorCourseEnrollments courseId={courseId} />
+				</>
+			)}
+		</div>
 	);
 };
 

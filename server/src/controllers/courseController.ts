@@ -9,6 +9,7 @@ import {
 	updateCourseProgress,
 	getCompletedCourses,
 	unenrollFromCourse,
+	getCourseEnrollments,
 } from "../services/course";
 import { ICourseDTO, IUser, UserRole } from "../types";
 import { Course } from "../models/Course";
@@ -239,6 +240,42 @@ export const getCompletedCoursesController = async (
 			success: true,
 			message: "Completed courses retrieved successfully",
 			data: completed,
+		});
+	} catch (error: any) {
+		res.status(400).json({
+			success: false,
+			message: error.message,
+		});
+	}
+};
+
+export const getCourseEnrollmentsController = async (
+	req: Request,
+	res: Response
+) => {
+	try {
+		const { courseId } = req.params;
+		const educatorId = req.user?._id;
+
+		if (!educatorId) throw new Error("Educator ID not found");
+
+		// Optionally: ensure educator owns this course
+		const course = await Course.findById(courseId);
+		if (!course) throw new Error("Course not found");
+		if (course.instructorId.toString() !== educatorId.toString()) {
+			return res.status(403).json({
+				success: false,
+				message:
+					"You are not authorized to view this course's enrollments",
+			});
+		}
+
+		const enrollments = await getCourseEnrollments(courseId);
+
+		res.status(200).json({
+			success: true,
+			message: "Course enrollments retrieved successfully",
+			data: enrollments,
 		});
 	} catch (error: any) {
 		res.status(400).json({

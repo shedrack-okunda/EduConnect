@@ -8,7 +8,7 @@ export interface IUser {
 	role: UserRole;
 	status: UserStatus;
 	profile: IUserProfile;
-	enrolledCourses: string[];
+	enrolledCourses: IEnrolledCourse[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -191,6 +191,12 @@ export interface IQuizQuestion {
 export interface IResource {
 	title: string;
 	url: string;
+}
+
+export interface IEnrolledCourse {
+	courseId: string;
+	progress: number;
+	status: string;
 }
 
 // Course DTO's

@@ -1,4 +1,4 @@
-import type { ICourse, ICourseDTO } from "../../../shared/types";
+import type { ICourse, ICourseDTO, IEnrollment } from "../../../shared/types";
 import { apiClient } from "../utils/api";
 
 const createCourse = async (courseData: ICourseDTO): Promise<ICourse> => {
@@ -103,6 +103,16 @@ const completedCourses = async (): Promise<ICourse[]> => {
 	}
 };
 
+const getCourseEnrollments = async (courseId: string) => {
+	try {
+		const response = await apiClient.get(`/course/${courseId}/enrollments`);
+		return response.data.data as IEnrollment[];
+	} catch (error) {
+		console.error(error);
+		throw new Error("Failed to fetch course enrollements");
+	}
+};
+
 export const courseService = {
 	deleteCourse,
 	updateCourse,
@@ -114,4 +124,5 @@ export const courseService = {
 	unenrollFromCourse,
 	updateCourseProgress,
 	completedCourses,
+	getCourseEnrollments,
 };

@@ -17,6 +17,7 @@ import EducatorDashboard from "./layout/EducatorDashboard";
 import Layout from "./layout/Layout";
 import EducationManager from "./components/profile/EducationManager";
 import NotFoundPage from "./pages/NotFoundPage";
+import { CourseDashboard } from "./components/course/CourseDashboard";
 
 function App() {
 	const { state } = useAuth();
@@ -57,6 +58,10 @@ function App() {
 					/>
 
 					<Route path="/educator" element={<EducatorDashboard />} />
+					<Route
+						path="/educator/courses"
+						element={<CourseDashboard />}
+					/>
 					<Route path="/profile" element={<ProfilePage />} />
 					<Route path="/profile/edit" element={<EditProfilePage />} />
 

@@ -5,6 +5,7 @@ import {
 	enrollInCourseController,
 	getCompletedCoursesController,
 	getCourseByIdController,
+	getCourseEnrollmentsController,
 	getCoursesController,
 	getEnrolledCoursesController,
 	unenrollFromCourseController,
@@ -22,11 +23,18 @@ router.get("/enrolled", authenticate, getEnrolledCoursesController);
 router.get("/completed", authenticate, getCompletedCoursesController);
 router.post("/enroll/:courseId", authenticate, enrollInCourseController);
 router.get("/course/:courseId", getCourseByIdController);
+
 router.put(
 	"/course/:courseId",
 	authenticate,
 	requireEducatorOrAdmin,
 	updateCourseController
+);
+router.get(
+	"/course/:courseId/enrollments",
+	authenticate,
+	requireEducatorOrAdmin,
+	getCourseEnrollmentsController
 );
 router.post("/unenroll/:courseId", authenticate, unenrollFromCourseController);
 router.put("/progress/:courseId", authenticate, updateCourseProgressController);
