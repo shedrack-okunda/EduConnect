@@ -15,9 +15,9 @@ import EduConnectLanding from "./pages/HomePage";
 import StudentDashboard from "./layout/StudentDashboard";
 import EducatorDashboard from "./layout/EducatorDashboard";
 import Layout from "./layout/Layout";
-import EducationManager from "./components/profile/EducationManager";
 import NotFoundPage from "./pages/NotFoundPage";
 import { CourseDashboard } from "./components/course/CourseDashboard";
+import { EducationManager } from "./components/profile/EducationManager";
 
 function App() {
 	const { state } = useAuth();
