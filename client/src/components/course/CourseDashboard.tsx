@@ -38,7 +38,7 @@ export const CourseDashboard: React.FC = () => {
 	};
 
 	return (
-		<div className="p-6">
+		<div className="flex flex-col min-h-screen bg-gray-900 text-white p-6">
 			{/* Header */}
 			<div className="flex justify-between items-center mb-6">
 				<h2 className="text-2xl font-bold">My Courses</h2>
@@ -104,12 +104,12 @@ export const CourseDashboard: React.FC = () => {
 							<div className="flex gap-3 pt-2">
 								<button
 									onClick={() => handleEdit(course)}
-									className="flex items-center gap-1 text-blue-400 hover:text-blue-600 transition">
+									className="flex items-center gap-1 px-3 py-1 rounded bg-gradient-to-r from-purple-600 to-blue-600 text-white hover:opacity-90 transition">
 									<Pencil size={18} /> Edit
 								</button>
 								<button
 									onClick={() => handleDelete(course._id)}
-									className="flex items-center gap-1 text-red-400 hover:text-red-600 transition">
+		className="flex items-center gap-1 px-3 py-1 rounded bg-gradient-to-r from-red-600 to-pink-600 text-white hover:opacity-90 transition">
 									<Trash2 size={18} /> Delete
 								</button>
 							</div>

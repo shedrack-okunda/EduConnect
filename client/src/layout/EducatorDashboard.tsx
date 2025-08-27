@@ -37,7 +37,7 @@ const EducatorDashboard: React.FC = () => {
 	}, [user?._id]);
 
 	return (
-		<div className="relative z-10 max-w-7xl mx-auto px-6 py-8">
+		<>
 			<CourseDashboard />
 
 			{courseId && (
@@ -51,7 +51,7 @@ const EducatorDashboard: React.FC = () => {
 					<EducatorCourseEnrollments courseId={courseId} />
 				</>
 			)}
-		</div>
+		</>
 	);
 };
 
