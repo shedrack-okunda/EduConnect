@@ -84,6 +84,12 @@ export interface IUserPreferences {
 	theme: "light" | "dark" | "system";
 }
 
+export interface IEnrolledCourse {
+	courseId: string;
+	progress: number;
+	status: string;
+}
+
 // Authentication DTOs
 export interface IRegisterDTO {
 	email: string;
@@ -191,12 +197,6 @@ export interface IQuizQuestion {
 export interface IResource {
 	title: string;
 	url: string;
-}
-
-export interface IEnrolledCourse {
-	courseId: string;
-	progress: number;
-	status: string;
 }
 
 // Course DTO's

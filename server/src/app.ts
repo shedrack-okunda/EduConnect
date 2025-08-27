@@ -1,7 +1,5 @@
 import express, { Request, Response } from "express";
 import dotenv from "dotenv";
-dotenv.config();
-
 import authRoutes from "./routes/auth";
 import connectDB from "./config/db";
 import cors from "cors";
@@ -11,6 +9,9 @@ import profileRoutes from "./routes/profile";
 import courseRoutes from "./routes/course";
 import courseModuleRoutes from "./routes/courseModule";
 import lessonsRoutes from "./routes/lessons";
+import adminRoutes from "./routes/admin";
+
+dotenv.config();
 
 const port = process.env.PORT;
 
@@ -32,6 +33,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/courses", courseRoutes);
 app.use("/api/modules", courseModuleRoutes);
