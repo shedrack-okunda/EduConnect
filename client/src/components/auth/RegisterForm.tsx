@@ -55,14 +55,17 @@ export const RegisterForm: React.FC = () => {
 					lastName: data.lastName,
 				},
 			});
-			const role = state.user?.role;
-			if (role === UserRole.STUDENT) {
+
+			if (state.user?.role === UserRole.STUDENT) {
 				navigate("/student");
-			} else if (role === UserRole.EDUCATOR) {
+			} else if (state.user?.role === UserRole.EDUCATOR) {
 				navigate("/educator");
-			} else if (role === UserRole.ADMIN) {
+			} else if (state.user?.role === UserRole.ADMIN) {
 				navigate("/dashboard");
-			}		} catch (error) {
+			} else {
+				navigate("/");
+			}
+		} catch (error) {
 			console.error(error);
 			setError("Failed to create account. Please try again.");
 		}
